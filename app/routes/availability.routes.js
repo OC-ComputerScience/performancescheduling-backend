@@ -24,5 +24,5 @@ module.exports = (app) => {
     availability.getByUserAndEvent
   );
 
-  app.use("/performance-t7/availability", router);
+  app.use("/performance/availability", router);
 };

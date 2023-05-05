@@ -22,5 +22,5 @@ module.exports = (app) => {
     timeslotSong.getByEventId
   );
 
-  app.use("/performance-t7/timeslotSong", router);
+  app.use("/performance/timeslotSong", router);
 };

@@ -1,11 +1,11 @@
 {
-  "name": "seiv-p2-node",
+  "name": "performancescheduling-backend",
   "version": "0.0.0",
   "description": "OC Music Department Node.js with Rest API",
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json performance-t7-backend.service .env deploy"
+    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json performance-backend.service .env deploy"
   },
   "keywords": [
     "node.js",

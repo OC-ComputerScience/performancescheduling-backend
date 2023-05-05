@@ -22,5 +22,5 @@ module.exports = (app) => {
     songTranslation.findByPieceId
   );
 
-  app.use("/performance-t7/songTranslation", router);
+  app.use("/performance/songTranslation", router);
 };

@@ -18,5 +18,5 @@ module.exports = (app) => {
   // Get all users and attached roles
   router.get("/all/roles", [authenticate], user.getAllWithRoles);
 
-  app.use("/performance-t7/user", router);
+  app.use("/performance/user", router);
 };
