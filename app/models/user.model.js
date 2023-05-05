@@ -22,13 +22,15 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    phoneNumber: {
+      type: Sequelize.STRING,
+    },
     authenticationType: {
       type: Sequelize.STRING,
       allowNull: false,
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     picture: {
       type: Sequelize.STRING,
@@ -36,9 +38,11 @@ module.exports = (sequelize, Sequelize) => {
     emailStatus: {
       type: Sequelize.BOOLEAN,
     },
+    textStatus: {
+      type: Sequelize.BOOLEAN,
+    },
     googleToken: {
-      type: Sequelize.STRING(3000),
-      allowNull: false,
+      type: Sequelize.STRING(512),
     },
     status: {
       type: Sequelize.STRING,

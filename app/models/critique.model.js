@@ -44,6 +44,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     overallComment: {
       type: Sequelize.STRING(500),
+      allowNull: false,
     },
   });
 

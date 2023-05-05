@@ -8,6 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     name: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     date: {
       type: Sequelize.DATEONLY,
@@ -23,6 +24,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     isReady: {
       type: Sequelize.BOOLEAN,
+      allowNull: false,
     },
   });
 

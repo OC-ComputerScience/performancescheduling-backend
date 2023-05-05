@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    isMusic: {
+    isMusicMajor: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
     },
