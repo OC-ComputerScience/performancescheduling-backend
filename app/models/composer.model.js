@@ -6,26 +6,26 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       unique: true,
     },
-    fName: {
-      type: Sequelize.STRING
+    firstName: {
+      type: Sequelize.STRING,
     },
-    lName: {
-      type: Sequelize.STRING
+    lastName: {
+      type: Sequelize.STRING,
     },
     nationality: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     dateOfBirth: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     dateOfDeath: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
-  },
-  {
-    timestamps: false
+    status: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return Composer;
 };
-

@@ -1,28 +1,24 @@
 module.exports = (sequelize, Sequelize) => {
-  const UserRole = sequelize.define("userRole", {
+  const UserNotification = sequelize.define("userNotification", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       unique: true,
     },
-    studentClassification: {
+    text: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
-    studentLessonHours: {
-      type: Sequelize.INTEGER,
-    },
-    studentSemesters: {
-      type: Sequelize.INTEGER,
-    },
-    title: {
+    data: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
-    status: {
+    isCompleted: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
     },
   });
 
-  return UserRole;
+  return UserNotification;
 };

@@ -1,22 +1,18 @@
 module.exports = (sequelize, Sequelize) => {
-  const UserRole = sequelize.define("userRole", {
+  const Level = sequelize.define("level", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       unique: true,
     },
-    studentClassification: {
+    name: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
-    studentLessonHours: {
-      type: Sequelize.INTEGER,
-    },
-    studentSemesters: {
-      type: Sequelize.INTEGER,
-    },
-    title: {
+    description: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     status: {
       type: Sequelize.BOOLEAN,
@@ -24,5 +20,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  return UserRole;
+  return Level;
 };

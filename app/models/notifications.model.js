@@ -1,16 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
-  const StudentInstrument = sequelize.define("studentInstrument", {
+  const Notification = sequelize.define("notification", {
     id: {
       type: Sequelize.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
       unique: true,
     },
-    status: {
-      type: Sequelize.BOOLEAN,
+    type: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
   });
 
-  return StudentInstrument;
+  return Notification;
 };

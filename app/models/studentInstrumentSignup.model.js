@@ -1,16 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
-  const StudentTimeslot = sequelize.define("studentTimeslot", {
+  const StudentInstrumentSignup = sequelize.define("studentInstrumentSignup", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      unique: true
+      unique: true,
     },
-  },
-  {
-    timestamps: false
   });
 
-  return StudentTimeslot;
+  return StudentInstrumentSignup;
 };
-

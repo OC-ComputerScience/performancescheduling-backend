@@ -1,24 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-  const Instrument = sequelize.define("instrument", {
+  const EventSignup = sequelize.define("eventSignup", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       unique: true,
     },
-    name: {
-      type: Sequelize.STRING,
+    startTime: {
+      type: Sequelize.TIME,
       allowNull: false,
     },
-    type: {
-      type: Sequelize.STRING,
+    endTime: {
+      type: Sequelize.TIME,
       allowNull: false,
     },
-    status: {
+    recordingLink: {
+      type: Sequelize.STRING,
+    },
+    pass: {
       type: Sequelize.BOOLEAN,
-      allowNull: false,
     },
   });
 
-  return Instrument;
+  return EventSignup;
 };

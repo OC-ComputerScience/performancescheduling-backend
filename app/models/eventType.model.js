@@ -1,39 +1,33 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("user", {
+  const EventType = sequelize.define("eventType", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       unique: true,
     },
-    firstName: {
+    type: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    lastName: {
+    slotType: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    email: {
+    instrumentType: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    authenticationType: {
+    description: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    password: {
-      type: Sequelize.STRING,
+    defaultSlotDuration: {
+      type: Sequelize.INTEGER,
       allowNull: false,
     },
-    picture: {
-      type: Sequelize.STRING,
-    },
-    emailStatus: {
-      type: Sequelize.STRING,
-    },
-    googleToken: {
-      type: Sequelize.STRING(3000),
+    isPrivate: {
+      type: Sequelize.BOOLEAN,
       allowNull: false,
     },
     status: {
@@ -42,5 +36,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  return User;
+  return EventType;
 };

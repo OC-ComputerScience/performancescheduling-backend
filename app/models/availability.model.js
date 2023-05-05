@@ -4,25 +4,17 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      unique: true
-    },
-    date: {
-      type: Sequelize.DATEONLY,
-      allowNull: false
+      unique: true,
     },
     startTime: {
       type: Sequelize.TIME,
-      allowNull: false
+      allowNull: false,
     },
     endTime: {
       type: Sequelize.TIME,
-      allowNull: false
+      allowNull: false,
     },
-  },
-  {
-    timestamps: false
   });
 
   return Availability;
 };
-

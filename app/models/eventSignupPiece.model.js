@@ -1,16 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
-  const TimeslotSong = sequelize.define("timeslotSong", {
+  const EventSignupPiece = sequelize.define("eventSignupPiece", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      unique: true
+      unique: true,
     },
-  },
-  {
-    timestamps: false
   });
 
-  return TimeslotSong;
+  return EventSignupPiece;
 };
-

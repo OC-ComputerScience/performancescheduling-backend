@@ -1,18 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-  const Instrument = sequelize.define("instrument", {
+  const Piece = sequelize.define("piece", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       unique: true,
     },
-    name: {
+    title: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    type: {
+    originalLanguage: {
       type: Sequelize.STRING,
-      allowNull: false,
+    },
+    originalLyrics: {
+      type: Sequelize.STRING,
+    },
+    poeticTranslation: {
+      type: Sequelize.STRING,
+    },
+    literalTranslation: {
+      type: Sequelize.STRING,
     },
     status: {
       type: Sequelize.BOOLEAN,
@@ -20,5 +28,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  return Instrument;
+  return Piece;
 };
