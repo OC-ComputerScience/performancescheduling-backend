@@ -14,6 +14,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    honorific: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -30,14 +34,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
     emailStatus: {
-      type: Sequelize.STRING,
+      type: Sequelize.BOOLEAN,
     },
     googleToken: {
       type: Sequelize.STRING(3000),
       allowNull: false,
     },
     status: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.STRING,
       allowNull: false,
     },
   });

@@ -7,43 +7,43 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
     },
     accuracyComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     accuracyGrade: {
       type: Sequelize.STRING,
     },
     balanceComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     balanceGrade: {
       type: Sequelize.STRING,
     },
     deportmentComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     deportmentGrade: {
       type: Sequelize.STRING,
     },
     dictionComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     dictionGrade: {
       type: Sequelize.STRING,
     },
     interpretationComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     interpretationGrade: {
       type: Sequelize.STRING,
     },
     toneComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
     toneGrade: {
       type: Sequelize.STRING,
     },
     overallComment: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(500),
     },
   });
 

@@ -22,222 +22,272 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.user = require("./user.model.js")(sequelize, Sequelize);
 db.availability = require("./availability.model.js")(sequelize, Sequelize);
-db.userRole = require("./userRole.model.js")(sequelize, Sequelize);
+db.composer = require("./composer.model.js")(sequelize, Sequelize);
+db.critique = require("./critique.model.js")(sequelize, Sequelize);
+db.event = require("./event.model.js")(sequelize, Sequelize);
+db.eventSignup = require("./eventSignup.model.js")(sequelize, Sequelize);
+db.eventSignupPiece = require("./eventSignupPiece.model.js")(
+  sequelize,
+  Sequelize
+);
+db.eventType = require("./eventType.model.js")(sequelize, Sequelize);
+db.instrument = require("./instrument.model.js")(sequelize, Sequelize);
+db.level = require("./level.model.js")(sequelize, Sequelize);
+db.major = require("./major.model.js")(sequelize, Sequelize);
+db.notification = require("./notification.model.js")(sequelize, Sequelize);
+db.piece = require("./piece.model.js")(sequelize, Sequelize);
+db.role = require("./role.model.js")(sequelize, Sequelize);
+db.semester = require("./semester.model.js")(sequelize, Sequelize);
+db.session = require("./session.model.js")(sequelize, Sequelize);
 db.studentInstrument = require("./studentInstrument.model.js")(
   sequelize,
   Sequelize
 );
-db.instrument = require("./instrument.model.js")(sequelize, Sequelize);
-db.studentTimeslot = require("./studentTimeslot.model.js")(
+db.studentInstrumentEvaluation =
+  require("./studentInstrumentEvaluation.model.js")(sequelize, Sequelize);
+db.studentInstrumentSignup = require("./studentInstrumentSignup.model.js")(
   sequelize,
   Sequelize
 );
-db.critique = require("./critique.model.js")(sequelize, Sequelize);
-db.eventTimeslot = require("./eventTimeslot.model.js")(sequelize, Sequelize);
-db.event = require("./event.model.js")(sequelize, Sequelize);
-db.semester = require("./semester.model.js")(sequelize, Sequelize);
-db.composer = require("./composer.model.js")(sequelize, Sequelize);
-db.song = require("./song.model.js")(sequelize, Sequelize);
-db.songTranslation = require("./songTranslation.model.js")(
+db.studentPiece = require("./studentPiece.model.js")(sequelize, Sequelize);
+db.user = require("./user.model.js")(sequelize, Sequelize);
+db.userNotification = require("./userNotification.model.js")(
   sequelize,
   Sequelize
 );
-db.repertoire = require("./repertoire.model.js")(sequelize, Sequelize);
-db.timeslotSong = require("./timeslotSong.model.js")(sequelize, Sequelize);
-db.evaluation = require("./evaluation.model.js")(sequelize, Sequelize);
-db.evaluationComment = require("./evaluationComment.model.js")(
-  sequelize,
-  Sequelize
-);
-db.session = require("./session.model.js")(sequelize, Sequelize);
-db.jurorTimeslot = require("./jurorTimeslot.model.js")(sequelize, Sequelize);
+db.userRole = require("./userRole.model.js")(sequelize, Sequelize);
 
 //Availability FKs
-db.user.hasMany(db.availability, {
+db.userRole.hasMany(db.availability, {
   foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 });
 db.event.hasMany(db.availability, {
   foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 });
-db.availability.belongsTo(db.user);
-db.availability.belongsTo(db.event);
+db.availability.belongsTo(db.userRole, {
+  foreignKey: { allowNull: false },
+});
+db.availability.belongsTo(db.event, {
+  foreignKey: { allowNull: false },
+});
 
 //Critique FKs
-db.studentTimeslot.hasMany(db.critique, {
-  foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
-});
-db.jurorTimeslot.hasMany(db.critique, {
-  foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
-});
-
-db.critique.belongsTo(db.studentTimeslot, {
+db.userRole.hasMany(db.critique, {
   foreignKey: { allowNull: false },
 });
-db.critique.belongsTo(db.jurorTimeslot, {
+db.eventSignup.hasMany(db.critique, {
   foreignKey: { allowNull: false },
 });
 
-//Evaluation FKs
-db.userRole.hasMany(db.evaluation, {
-  foreignKey: { name: "facultyId", allowNull: false },
-  onDelete: "CASCADE",
-});
-db.studentInstrument.hasMany(db.evaluation, {
-  foreignKey: { name: "studentId", allowNull: false },
-  onDelete: "CASCADE",
-});
-
-db.semester.hasMany(db.evaluation, {
+db.critique.belongsTo(db.userRole, {
   foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 });
-
-db.evaluation.belongsTo(db.userRole, {
-  foreignKey: { name: "facultyId" },
-});
-db.evaluation.belongsTo(db.studentInstrument, {
-  foreignKey: { name: "studentId" },
-});
-db.evaluation.belongsTo(db.semester);
-
-//EvaluationComment FKs
-db.evaluation.hasMany(db.evaluationComment, {
+db.critique.belongsTo(db.eventSignup, {
   foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 });
-
-db.evaluationComment.belongsTo(db.evaluation);
 
 //Event FKs
+db.userRole.hasMany(db.event, {
+  foreignKey: { name: "privateUserRoleId", allowNull: false },
+});
+db.eventType.hasMany(db.event, {
+  foreignKey: { allowNull: false },
+});
 db.semester.hasMany(db.event, {
   foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 });
 
-db.event.belongsTo(db.semester);
-
-//EventTimeslot FKs
-db.userRole.hasMany(db.eventTimeslot, {
-  foreignKey: { name: "accompanistId" },
+db.event.belongsTo(db.userRole, {
+  foreignKey: { name: "privateUserRoleId", allowNull: false },
 });
-db.event.hasMany(db.eventTimeslot);
-
-db.eventTimeslot.belongsTo(db.userRole, {
-  foreignKey: { name: "accompanistId" },
-});
-db.eventTimeslot.belongsTo(db.event);
-
-//Repertoire FKs
-db.studentInstrument.hasMany(db.repertoire, {
+db.event.belongsTo(db.eventType, {
   foreignKey: { allowNull: false },
 });
-db.song.hasMany(db.repertoire, {
-  foreignKey: { allowNull: false },
-});
-db.semester.hasMany(db.repertoire);
-
-db.repertoire.belongsTo(db.semester);
-db.repertoire.belongsTo(db.studentInstrument);
-db.repertoire.belongsTo(db.song);
-db.repertoire.belongsTo(db.semester);
-
-//Song FKs
-db.composer.hasMany(db.song, {
+db.event.belongsTo(db.semester, {
   foreignKey: { allowNull: false },
 });
 
-db.song.belongsTo(db.composer);
-
-//SongTranslation FKs
-db.song.hasMany(db.songTranslation, {
+//EventSignup FKs
+db.event.hasMany(db.eventSignup, {
   foreignKey: { allowNull: false },
 });
 
-db.songTranslation.belongsTo(db.song);
-
-//StudentInstrument FKs
-db.userRole.hasMany(db.studentInstrument, {
-  as: "student",
-  foreignKey: { name: "studentId", allowNull: false },
-});
-db.instrument.hasMany(db.studentInstrument, {
-  foreignKey: { allowNull: false },
-});
-db.userRole.hasMany(db.studentInstrument, {
-  as: "accompanist",
-  foreignKey: { name: "accompanistId" },
-});
-db.userRole.hasMany(db.studentInstrument, {
-  as: "faculty",
-  foreignKey: { name: "facultyId", allowNull: false },
-});
-
-db.studentInstrument.belongsTo(db.userRole, { as: "student" });
-db.studentInstrument.belongsTo(db.userRole, { as: "faculty" });
-db.studentInstrument.belongsTo(db.userRole, { as: "accompanist" });
-db.studentInstrument.belongsTo(db.instrument);
-
-//StudentTimeslot FKs
-db.studentInstrument.hasMany(db.studentTimeslot, {
-  foreignKey: { allowNull: false },
-});
-db.eventTimeslot.hasMany(db.studentTimeslot, {
-  foreignKey: { allowNull: false },
-});
-db.userRole.hasMany(db.studentTimeslot, {
-  foreignKey: { name: "facultyId", allowNull: false },
-});
-
-db.studentTimeslot.belongsTo(db.studentInstrument);
-db.studentTimeslot.belongsTo(db.eventTimeslot);
-db.studentTimeslot.belongsTo(db.userRole, {
-  foreignKey: { name: "facultyId" },
-});
-
-//TimeslotSong FKs
-db.eventTimeslot.hasMany(db.timeslotSong, {
-  foreignKey: { name: "timeslotId", allowNull: false },
-});
-db.song.hasMany(db.timeslotSong, {
+db.eventSignup.belongsTo(db.event, {
   foreignKey: { allowNull: false },
 });
 
-db.timeslotSong.belongsTo(db.eventTimeslot, {
-  foreignKey: { name: "timeslotId" },
+//EventSignupPiece FKs
+db.eventSignup.hasMany(db.eventSignupPiece, {
+  foreignKey: { allowNull: false },
 });
-db.timeslotSong.belongsTo(db.song);
-
-//UserRole FKs
-db.user.hasMany(db.userRole, {
+db.piece.hasMany(db.eventSignupPiece, {
   foreignKey: { allowNull: false },
 });
 
-db.userRole.belongsTo(db.user);
+db.eventSignupPiece.belongsTo(db.eventSignup, {
+  foreignKey: { allowNull: false },
+});
+db.eventSignupPiece.belongsTo(db.piece, {
+  foreignKey: { allowNull: false },
+});
+
+//Piece FKs
+db.composer.hasMany(db.piece, {
+  foreignKey: { allowNull: false },
+});
+
+db.piece.belongsTo(db.composer, {
+  foreignKey: { allowNull: false },
+});
 
 //Session FKs
 db.user.hasMany(db.session, {
   foreignKey: { allowNull: false },
 });
 
-db.session.belongsTo(db.user);
-
-// JurorTimeslot FKs
-db.eventTimeslot.hasMany(db.jurorTimeslot, {
+db.session.belongsTo(db.user, {
   foreignKey: { allowNull: false },
 });
-db.userRole.hasMany(db.jurorTimeslot, {
-  foreignKey: { name: "jurorId", allowNull: false },
+
+//StudentInstrument FKs
+db.level.hasMany(db.studentInstrument, {
+  foreignKey: { allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrument, {
+  as: "studentRole",
+  foreignKey: { name: "studentRoleId", allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrument, {
+  as: "instructorRole",
+  foreignKey: { name: "instructorRoleId", allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrument, {
+  as: "accompanistRole",
+  foreignKey: { name: "accompanistRoleId", allowNull: true },
+});
+db.instrument.hasMany(db.studentInstrument, {
+  foreignKey: { allowNull: false },
 });
 
-db.jurorTimeslot.belongsTo(db.eventTimeslot);
-db.jurorTimeslot.belongsTo(db.userRole, {
-  foreignKey: { name: "jurorId" },
+db.studentInstrument.belongsTo(db.level, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrument.belongsTo(db.userRole, {
+  as: "studentRole",
+  foreignKey: { name: "studentRoleId", allowNull: true },
+});
+db.studentInstrument.belongsTo(db.userRole, {
+  as: "instructorRole",
+  foreignKey: { name: "instructorRoleId", allowNull: true },
+});
+db.studentInstrument.belongsTo(db.userRole, {
+  as: "accompanistRole",
+  foreignKey: { name: "accompanistRoleId" },
+});
+db.studentInstrument.belongsTo(db.instrument, {
+  foreignKey: { allowNull: false },
+});
+
+//StudentInstrumentEvaluation FKs
+db.semester.hasMany(db.studentInstrumentEvaluation, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrument.hasMany(db.studentInstrumentEvaluation, {
+  foreignKey: { allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrumentEvaluation, {
+  foreignKey: { name: "instructorRoleId", allowNull: false },
+});
+
+db.studentInstrumentEvaluation.belongsTo(db.semester, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrumentEvaluation.belongsTo(db.studentInstrument, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrumentEvaluation.belongsTo(db.userRole, {
+  foreignKey: { name: "instructorRoleId", allowNull: false },
+});
+
+//StudentInstrumentSignup FKs
+db.eventSignup.hasMany(db.studentInstrumentSignup, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrument.hasMany(db.studentInstrumentSignup, {
+  foreignKey: { allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrumentSignup, {
+  foreignKey: { name: "instructorRoleId", allowNull: false },
+});
+db.userRole.hasMany(db.studentInstrumentSignup, {
+  foreignKey: { name: "accompanistRoleId", allowNull: false },
+});
+
+db.studentInstrumentSignup.belongsTo(db.eventSignup, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrumentSignup.belongsTo(db.studentInstrument, {
+  foreignKey: { allowNull: false },
+});
+db.studentInstrumentSignup.belongsTo(db.userRole, {
+  foreignKey: { name: "instructorRoleId", allowNull: false },
+});
+db.studentInstrumentSignup.belongsTo(db.userRole, {
+  foreignKey: { name: "accompanistRoleId", allowNull: false },
+});
+
+//StudentPiece FKs
+db.studentInstrument.hasMany(db.studentPiece, {
+  foreignKey: { allowNull: false },
+});
+db.piece.hasMany(db.studentPiece, {
+  foreignKey: { allowNull: false },
+});
+db.semester.hasMany(db.studentPiece);
+
+db.studentPiece.belongsTo(db.studentInstrument, {
+  foreignKey: { allowNull: false },
+});
+db.studentPiece.belongsTo(db.piece, {
+  foreignKey: { allowNull: false },
+});
+db.studentPiece.belongsTo(db.semester);
+
+//UserNotification FKs
+db.userRole.hasMany(db.userNotification, {
+  foreignKey: { allowNull: false },
+});
+db.notification.hasMany(db.userNotification, {
+  foreignKey: { allowNull: false },
+});
+
+db.userNotification.belongsTo(db.userRole, {
+  foreignKey: { allowNull: false },
+});
+db.userNotification.belongsTo(db.notification, {
+  foreignKey: { allowNull: false },
+});
+
+//UserRole FKs
+db.major.hasMany(db.userRole, {
+  foreignKey: { allowNull: false },
+});
+db.role.hasMany(db.userRole, {
+  foreignKey: { allowNull: false },
+});
+db.user.hasMany(db.userRole, {
+  foreignKey: { allowNull: false },
+});
+
+db.userRole.belongsTo(db.major, {
+  foreignKey: { allowNull: false },
+});
+db.userRole.belongsTo(db.role, {
+  foreignKey: { allowNull: false },
+});
+db.userRole.belongsTo(db.user, {
+  foreignKey: { allowNull: false },
 });
 
 module.exports = db;
