@@ -1,26 +1,20 @@
 module.exports = (app) => {
-  const timeslotSong = require("../controllers/timeslotSong.controller.js");
+  const eventType = require("../controllers/eventType.controller.js");
   const { authenticate } = require("../authorization/authorization.js");
   var router = require("express").Router();
 
-  // Create a new timeslotSong
-  router.post("/", [authenticate], timeslotSong.create);
-  // Retrieve all timeslotSongs
-  router.get("/", [authenticate], timeslotSong.findAll);
-  // Retrieve a single timeslotSong with id
-  router.get("/:id", [authenticate], timeslotSong.findById);
-  // Update a timeslotSong with id
-  router.put("/:id", [authenticate], timeslotSong.update);
-  // Delete a timeslotSong with id
-  router.delete("/:id", [authenticate], timeslotSong.delete);
-  // Delete all timeslotSongs
-  router.delete("/", [authenticate], timeslotSong.deleteAll);
-  // Get all songs by timeslot
-  router.get(
-    "/timeslotId/:timeslotId",
-    [authenticate],
-    timeslotSong.getByEventId
-  );
+  // Create a new eventType
+  router.post("/", [authenticate], eventType.create);
+  // Retrieve all eventTypes
+  router.get("/", [authenticate], eventType.findAll);
+  // Retrieve a single eventType with id
+  router.get("/:id", [authenticate], eventType.findById);
+  // Update a eventType with id
+  router.put("/:id", [authenticate], eventType.update);
+  // Delete a eventType with id
+  router.delete("/:id", [authenticate], eventType.delete);
+  // Delete all eventTypes
+  router.delete("/", [authenticate], eventType.deleteAll);
 
-  app.use("/performance/timeslotSong", router);
+  app.use("/performanceapi/eventType", router);
 };

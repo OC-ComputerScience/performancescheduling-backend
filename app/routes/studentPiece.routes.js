@@ -1,31 +1,31 @@
 module.exports = (app) => {
-  const repertoire = require("../controllers/repertoire.controller.js");
+  const studentPiece = require("../controllers/studentPiece.controller.js");
   const { authenticate } = require("../authorization/authorization.js");
   var router = require("express").Router();
 
-  // Create a new repertoire
-  router.post("/", [authenticate], repertoire.create);
-  // Retrieve all repertoires
-  router.get("/", [authenticate], repertoire.findAll);
-  // Retrieve a single repertoire with id
-  router.get("/:id", [authenticate], repertoire.findById);
-  // Update a repertoire with id
-  router.put("/:id", [authenticate], repertoire.update);
-  // Delete a repertoire with id
-  router.delete("/:id", [authenticate], repertoire.delete);
-  // Delete all repertoires
-  router.delete("/", [authenticate], repertoire.deleteAll);
-  // Get all repertoire by semester for userId
+  // Create a new studentPiece
+  router.post("/", [authenticate], studentPiece.create);
+  // Retrieve all studentPieces
+  router.get("/", [authenticate], studentPiece.findAll);
+  // Retrieve a single studentPiece with id
+  router.get("/:id", [authenticate], studentPiece.findById);
+  // Update a studentPiece with id
+  router.put("/:id", [authenticate], studentPiece.update);
+  // Delete a studentPiece with id
+  router.delete("/:id", [authenticate], studentPiece.delete);
+  // Delete all studentPieces
+  router.delete("/", [authenticate], studentPiece.deleteAll);
+  // Get all studentPiece by semester for userId
   router.get(
     "/userId/:userId",
     [authenticate],
-    repertoire.getStudentRepertoire
+    studentPiece.getStudentRepertoire
   );
   router.get(
     "/semesters/userId/:userId",
     [authenticate],
-    repertoire.getSemesterStudentRepertoire
+    studentPiece.getSemesterStudentRepertoire
   );
 
-  app.use("/performance/repertoire", router);
+  app.use("/performanceapi/studentPiece", router);
 };

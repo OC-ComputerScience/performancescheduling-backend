@@ -22,5 +22,5 @@ module.exports = (app) => {
     critique.getCritiquesByTimeslotAndFaculty
   );
 
-  app.use("/performance/critique", router);
+  app.use("/performanceapi/critique", router);
 };

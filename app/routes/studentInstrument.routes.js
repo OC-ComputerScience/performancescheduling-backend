@@ -24,5 +24,5 @@ module.exports = (app) => {
     studentInstrument.getStudentsForInstructorId
   );
 
-  app.use("/performance/studentInstrument", router);
+  app.use("/performanceapi/studentInstrument", router);
 };

@@ -1,20 +1,20 @@
 module.exports = (app) => {
-  const studentTimeslot = require("../controllers/studentTimeslot.controller.js");
+  const studentInstrumentSignup = require("../controllers/studentInstrumentSignup.controller.js");
   const { authenticate } = require("../authorization/authorization.js");
   var router = require("express").Router();
 
-  // Create a new studentTimeslot
-  router.post("/", [authenticate], studentTimeslot.create);
-  // Retrieve all studentTimeslots
-  router.get("/", [authenticate], studentTimeslot.findAll);
-  // Retrieve a single studentTimeslot with id
-  router.get("/:id", [authenticate], studentTimeslot.findById);
-  // Update a studentTimeslot with id
-  router.put("/:id", [authenticate], studentTimeslot.update);
-  // Delete a studentTimeslot with id
-  router.delete("/:id", [authenticate], studentTimeslot.delete);
-  // Delete all studentTimeslots
-  router.delete("/", [authenticate], studentTimeslot.deleteAll);
+  // Create a new studentInstrumentSignup
+  router.post("/", [authenticate], studentInstrumentSignup.create);
+  // Retrieve all studentInstrumentSignups
+  router.get("/", [authenticate], studentInstrumentSignup.findAll);
+  // Retrieve a single studentInstrumentSignup with id
+  router.get("/:id", [authenticate], studentInstrumentSignup.findById);
+  // Update a studentInstrumentSignup with id
+  router.put("/:id", [authenticate], studentInstrumentSignup.update);
+  // Delete a studentInstrumentSignup with id
+  router.delete("/:id", [authenticate], studentInstrumentSignup.delete);
+  // Delete all studentInstrumentSignups
+  router.delete("/", [authenticate], studentInstrumentSignup.deleteAll);
 
-  app.use("/performance/studentTimeslot", router);
+  app.use("/performanceapi/studentInstrumentSignup", router);
 };

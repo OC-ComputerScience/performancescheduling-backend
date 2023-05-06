@@ -16,5 +16,5 @@ module.exports = (app) => {
   // Delete all instruments
   router.delete("/", [authenticate], instrument.deleteAll);
 
-  app.use("/performance/instrument", router);
+  app.use("/performanceapi/instrument", router);
 };

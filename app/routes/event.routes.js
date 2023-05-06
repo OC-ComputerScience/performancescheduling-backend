@@ -46,5 +46,5 @@ module.exports = (app) => {
   // Get all event types
   router.get("/types/unique", [authenticate], event.getAllEventTypes);
 
-  app.use("/performance/event", router);
+  app.use("/performanceapi/event", router);
 };

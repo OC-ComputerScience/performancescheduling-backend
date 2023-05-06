@@ -18,5 +18,5 @@ module.exports = (app) => {
   // Get current semester
   router.get("/date/:date", [authenticate], semester.getSemesterByDate);
 
-  app.use("/performance/semester", router);
+  app.use("/performanceapi/semester", router);
 };

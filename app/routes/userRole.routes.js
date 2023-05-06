@@ -20,5 +20,5 @@ module.exports = (app) => {
   // Get all roles in the system
   router.get("/roles/unique", [authenticate], userRole.getUniqueRoles);
 
-  app.use("/performance/userRole", router);
+  app.use("/performanceapi/userRole", router);
 };
