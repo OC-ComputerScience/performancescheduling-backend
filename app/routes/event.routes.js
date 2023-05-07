@@ -17,19 +17,12 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], event.delete);
   // Delete all events
   router.delete("/", [authenticate], event.deleteAll);
-  // Retrieve timeslots for eventId
+  // Retrieve student signups for eventId
   router.get(
     "/critiqueTimeslots/:eventId",
     [authenticate],
-    event.getStudentTimeslotsForEventId
+    event.getStudentInstrumentSignupsForEventId
   );
-  // Retrieve critiques by semester id
-  router.get(
-    "/semesterCritiques/:semesterId",
-    [authenticate],
-    event.getEventCritiquesBySemesterId
-  );
-
   // Retrieve critiques by semester id and student id
   router.get(
     "/semesterCritiques/:semesterId/user/:userId",
@@ -42,9 +35,6 @@ module.exports = (app) => {
     [authenticate],
     event.getEventsBySemesterId
   );
-
-  // Get all event types
-  router.get("/types/unique", [authenticate], event.getAllEventTypes);
 
   app.use("/performanceapi/event", router);
 };

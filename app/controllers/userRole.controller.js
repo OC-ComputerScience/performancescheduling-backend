@@ -5,35 +5,37 @@ const UserRole = db.userRole;
 // Create and Save a new userRole
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.role) {
+  if (!req.body.majorId) {
     res.status(400).send({
-      message: "role can not be empty!",
+      message: "majorId cannot be empty!",
+    });
+    return;
+  } else if (!req.body.roleId) {
+    res.status(400).send({
+      message: "roleId cannot be empty!",
     });
     return;
   } else if (!req.body.userId) {
     res.status(400).send({
-      message: "userId can not be empty!",
+      message: "userId cannot be empty!",
     });
     return;
-  } else if (!req.body.isActive) {
+  } else if (!req.body.status) {
     res.status(400).send({
-      message: "isActive can not be empty!",
+      message: "status cannot be empty!",
     });
     return;
   }
 
   const userRole = {
-    role: req.body.role,
-    type: req.body.type,
-    stuClassification: req.body.stuClassification,
-    stuMajor: req.body.stuMajor,
-    stuNumOfSemesters: req.body.stuNumOfSemesters,
-    stuEmailCritiqueBool: req.body.stuEmailCritiqueBool,
-    stuCompletedHearing: req.body.stuCompletedHearing,
-    title: req.body.title,
-    isInstructor: req.body.isInstructor,
-    isActive: req.body.isActive,
+    majorId: req.body.majorId,
+    roleId: req.body.roleId,
     userId: req.body.userId,
+    studentClassification: req.body.studentClassification,
+    studentLessonHours: req.body.studentLessonHours,
+    studentSemesters: req.body.studentSemesters,
+    title: req.body.title,
+    status: req.body.status,
   };
 
   // Create and Save a new userRole
@@ -158,7 +160,7 @@ exports.getRolesForUser = (req, res) => {
   UserRole.findAll({
     where: {
       userId: { [Op.eq]: req.params.userId },
-      isActive: { [Op.eq]: 1 },
+      status: { [Op.eq]: "active" },
     },
   })
     .then((data) => {
@@ -168,20 +170,6 @@ exports.getRolesForUser = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving userRoles.",
-      });
-    });
-};
-
-exports.getUniqueRoles = (req, res) => {
-  UserRole.findAll({
-    attributes: [db.sequelize.fn("DISTINCT", db.sequelize.col("role")), "role"],
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving roles.",
       });
     });
 };

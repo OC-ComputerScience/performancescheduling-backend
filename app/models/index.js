@@ -89,7 +89,7 @@ db.critique.belongsTo(db.eventSignup, {
 
 //Event FKs
 db.userRole.hasMany(db.event, {
-  foreignKey: { name: "privateUserRoleId", allowNull: false },
+  foreignKey: { name: "privateUserRoleId", allowNull: true },
 });
 db.eventType.hasMany(db.event, {
   foreignKey: { allowNull: false },
@@ -99,7 +99,7 @@ db.semester.hasMany(db.event, {
 });
 
 db.event.belongsTo(db.userRole, {
-  foreignKey: { name: "privateUserRoleId", allowNull: false },
+  foreignKey: { name: "privateUserRoleId", allowNull: true },
 });
 db.event.belongsTo(db.eventType, {
   foreignKey: { allowNull: false },

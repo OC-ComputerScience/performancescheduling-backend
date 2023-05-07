@@ -1,163 +1,144 @@
 const db = require("../models");
 const { Op } = require("sequelize");
-const User = db.user;
+const Role = db.role;
 
-// Create and Save a new user
+// Create and Save a new role
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.fName) {
+  if (!req.body.role) {
     res.status(400).send({
-      message: "fName can not be empty!",
+      message: "role cannot be empty!",
     });
     return;
-  } else if (!req.body.lName) {
+  } else if (!req.body.type) {
     res.status(400).send({
-      message: "lName can not be empty!",
+      message: "type cannot be empty!",
     });
     return;
-  } else if (!req.body.email) {
+  } else if (!req.body.status) {
     res.status(400).send({
-      message: "email can not be empty!",
+      message: "status cannot be empty!",
     });
     return;
   }
 
-  const user = {
-    fName: req.body.fName,
-    lName: req.body.lName,
-    email: req.body.email,
-    picture: req.body.picture,
-    lastRole: req.body.lastRole,
+  const role = {
+    role: req.body.role,
+    type: req.body.type,
+    status: req.body.status,
   };
 
-  // Create and Save a new user
-  User.create(user)
+  // Create and Save a new role
+  Role.create(role)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the user.",
+        message: err.message || "Some error occurred while creating the role.",
       });
     });
 };
 
-// Retrieve all users from the database
+// Retrieve all roles from the database
 exports.findAll = (req, res) => {
-  User.findAll()
+  Role.findAll()
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
+        message: err.message || "Some error occurred while retrieving roles.",
       });
     });
 };
 
-// Retrieve a(n) user by id
+// Retrieve a(n) role by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  User.findByPk(id)
+  Role.findByPk(id)
     .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: "Cannot find user with id=" + id,
+          message: "Cannot find role with id=" + id,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving user with id=" + id,
+        message: "Error retrieving role with id=" + id,
       });
     });
 };
 
-// Update a(n) user by the id in the request
+// Update a(n) role by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  User.update(req.body, {
+  Role.update(req.body, {
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "User was updated successfully.",
+          message: "Role was updated successfully.",
         });
       } else {
         res.send({
           message:
-            "Cannot update user with id=" +
+            "Cannot update role with id=" +
             id +
-            ". Maybe the user was not found or req.body is empty!",
+            ". Maybe the role was not found or req.body is empty!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating user with id=" + id,
+        message: "Error updating role with id=" + id,
       });
     });
 };
 
-// Delete a(n) user with the specified id in the request
+// Delete a(n) role with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  User.destroy({
+  Role.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "User was deleted successfully!",
+          message: "Role was deleted successfully!",
         });
       } else {
         res.send({
           message:
-            "Cannot delete user with id=" +
+            "Cannot delete role with id=" +
             id +
-            ". Maybe the user was not found",
+            ". Maybe the role was not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete user with id=" + id,
+        message: "Could not delete role with id=" + id,
       });
     });
 };
 
-// Delete all users from the database.
+// Delete all roles from the database.
 exports.deleteAll = (req, res) => {
-  User.destroy({
+  Role.destroy({
     where: {},
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} users were deleted successfully!` });
+      res.send({ message: `${nums} roles were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all users.",
-      });
-    });
-};
-
-exports.getAllWithRoles = (req, res) => {
-  User.findAll({
-    include: {
-      model: db.userRole,
-      required: false,
-    },
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
+        message: err.message || "Some error occurred while removing all roles.",
       });
     });
 };

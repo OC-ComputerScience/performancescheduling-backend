@@ -5,21 +5,33 @@ const Semester = db.semester;
 // Create and Save a new semester
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.year) {
+  if (!req.body.name) {
     res.status(400).send({
-      message: "year can not be empty!",
+      message: "name cannot be empty!",
     });
     return;
-  } else if (!req.body.code) {
+  } else if (!req.body.startDate) {
     res.status(400).send({
-      message: "semester code can not be empty!",
+      message: "startDate cannot be empty!",
+    });
+    return;
+  } else if (!req.body.endDate) {
+    res.status(400).send({
+      message: "endDate cannot be empty!",
+    });
+    return;
+  } else if (!req.body.status) {
+    res.status(400).send({
+      message: "status cannot be empty!",
     });
     return;
   }
 
   const semester = {
-    year: req.body.year,
-    code: req.body.code,
+    name: req.body.name,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    status: req.body.status,
   };
 
   // Create and Save a new semester

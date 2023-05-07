@@ -5,29 +5,40 @@ const StudentInstrument = db.studentInstrument;
 // Create and Save a new studentInstrument
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.studentId) {
+  if (!req.body.levelId) {
     res.status(400).send({
-      message: "studentId can not be empty!",
+      message: "levelId cannot be empty!",
+    });
+    return;
+  } else if (!req.body.studentRoleId) {
+    res.status(400).send({
+      message: "studentRoleId cannot be empty!",
+    });
+    return;
+  } else if (!req.body.instructorRoleId) {
+    res.status(400).send({
+      message: "instructorRoleId cannot be empty!",
     });
     return;
   } else if (!req.body.instrumentId) {
     res.status(400).send({
-      message: "instrumentId can not be empty!",
+      message: "instrumentId cannot be empty!",
     });
     return;
-  } else if (!req.body.facultyId) {
+  } else if (!req.body.status) {
     res.status(400).send({
-      message: "facultyId can not be empty!",
+      message: "status cannot be empty!",
     });
     return;
   }
 
   const studentInstrument = {
-    level: req.body.level,
-    studentId: req.body.studentId,
+    levelId: req.body.levelId,
+    studentRoleId: req.body.studentRoleId,
+    instructorRoleId: req.body.instructorRoleId,
+    accompanistRoleId: req.body.accompanistRoleId,
     instrumentId: req.body.instrumentId,
-    accompanistId: req.body.accompanistId,
-    facultyId: req.body.facultyId,
+    status: req.body.status,
   };
 
   // Create and Save a new studentInstrument
@@ -158,7 +169,7 @@ exports.getByUserId = (req, res) => {
     include: [
       {
         model: db.userRole,
-        as: "student",
+        as: "studentRole",
         required: true,
         include: {
           model: db.user,
@@ -170,33 +181,33 @@ exports.getByUserId = (req, res) => {
       },
       {
         model: db.userRole,
-        as: "faculty",
+        as: "facultyRole",
         required: true,
-        include: {
-          model: db.user,
-          required: true,
-          include: [
-            {
-              model: db.availability,
-              required: false,
-            },
-          ],
-        },
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+          {
+            model: db.availability,
+            required: false,
+          },
+        ],
       },
       {
         model: db.userRole,
-        as: "accompanist",
+        as: "accompanistRole",
         required: false,
-        include: {
-          model: db.user,
-          required: true,
-          include: [
-            {
-              model: db.availability,
-              required: false,
-            },
-          ],
-        },
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+          {
+            model: db.availability,
+            required: false,
+          },
+        ],
       },
       {
         model: db.instrument,
@@ -225,8 +236,8 @@ exports.getStudentsForInstructorId = (req, res) => {
         include: {
           model: StudentInstrument,
           required: true,
-          as: "student",
-          where: { facultyId: req.params.id },
+          as: "studentRole",
+          where: { instructorRoleId: req.params.id },
           include: {
             model: db.instrument,
             required: true,

@@ -15,11 +15,23 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], critique.delete);
   // Delete all critiques
   router.delete("/", [authenticate], critique.deleteAll);
-  // get ritiques by timeslot and faculty
+  // get critique by timeslot and faculty
   router.get(
-    "/timeslotId/:timeslotId/facultyId/:facultyId",
+    "/eventSignupId/:eventSignupId/userRoleId/:userRoleId",
     [authenticate],
-    critique.getCritiquesByTimeslotAndFaculty
+    critique.getCritiqueByEventSignupAndJuror
+  );
+  // Retrieve critiques by semester id
+  router.get(
+    "/semesterId/:semesterId",
+    [authenticate],
+    critique.getBySemesterId
+  );
+  // Retrieve critiques by semester id and student id
+  router.get(
+    "/semesterId/:semesterId/userId/:userId",
+    [authenticate],
+    critique.getBySemesterIdAndStudentId
   );
 
   app.use("/performanceapi/critique", router);

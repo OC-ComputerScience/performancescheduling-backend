@@ -1,34 +1,38 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const Event = db.event;
-const StudentTimeslot = db.studentTimeslot;
 
 // Create and Save a new event
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.date) {
+  if (!req.body.name) {
     res.status(400).send({
-      message: "Date can not be empty!",
+      message: "name cannot be empty!",
     });
     return;
-  } else if (req.body.isPrivateEvent == undefined) {
+  } else if (!req.body.date) {
     res.status(400).send({
-      message: "isPrivateEvent can not be empty!",
+      message: "date cannot be empty!",
     });
     return;
-  } else if (!req.body.name) {
+  } else if (!req.body.startTime) {
     res.status(400).send({
-      message: "name can not be empty!",
+      message: "startTime cannot be empty!",
     });
     return;
-  } else if (req.body.canMergeSlots == undefined) {
+  } else if (!req.body.endTime) {
     res.status(400).send({
-      message: "canMergeSlots can not be empty!",
+      message: "endTime cannot be empty!",
     });
     return;
-  } else if (!req.body.slotDuration) {
+  } else if (req.body.isReady === undefined) {
     res.status(400).send({
-      message: "slot duration can not be empty!",
+      message: "isReady can not be empty!",
+    });
+    return;
+  } else if (!req.body.eventTypeId) {
+    res.status(400).send({
+      message: "eventTypeId can not be empty!",
     });
     return;
   } else if (!req.body.semesterId) {
@@ -39,14 +43,13 @@ exports.create = (req, res) => {
   }
 
   const event = {
-    type: req.body.type,
     name: req.body.name,
     date: req.body.date,
     startTime: req.body.startTime,
     endTime: req.body.endTime,
-    isPrivateEvent: req.body.isPrivateEvent,
-    canMergeSlots: req.body.canMergeSlots,
-    slotDuration: req.body.slotDuration,
+    isReady: req.body.isReady,
+    privateUserRoleId: req.body.privateUserRoleId,
+    eventTypeId: req.body.eventTypeId,
     semesterId: req.body.semesterId,
   };
 
@@ -157,44 +160,63 @@ exports.delete = async (req, res) => {
     where: {
       id: { [Op.eq]: id },
     },
-    include: {
-      model: db.eventTimeslot,
-      required: false,
-      include: [
-        {
-          model: db.studentTimeslot,
-          required: false,
-        },
-        {
-          model: db.jurorTimeslot,
-          required: false,
-        },
-        {
-          model: db.timeslotSong,
-          required: false,
-        },
-      ],
-    },
+    include: [
+      {
+        model: db.availability,
+        required: false,
+      },
+      {
+        model: db.eventSignup,
+        required: false,
+        include: [
+          {
+            model: db.studentInstrumentSignup,
+            required: false,
+          },
+          {
+            model: db.critique,
+            required: false,
+          },
+          {
+            model: db.eventSignupPiece,
+            required: false,
+          },
+        ],
+      },
+    ],
   })
     .then(async (data) => {
-      for (let x = 0; x < data[0].dataValues.eventTimeslots.length; x++) {
-        const curEventTS = data[0].dataValues.eventTimeslots[x].dataValues;
-        for (let y = 0; y < curEventTS.studentTimeslots.length; y++) {
-          const curStuTS = curEventTS.studentTimeslots[y].dataValues;
-          await db.studentTimeslot.destroy({
-            where: { id: curStuTS.id },
+      for (let x = 0; x < data[0].dataValues.availabilities.length; x++) {
+        const curAvailability = data[0].dataValues.availabilities[x].dataValues;
+        await db.availability.destroy({
+          where: { id: curAvailability.id },
+        });
+      }
+      for (let x = 0; x < data[0].dataValues.eventSignups.length; x++) {
+        const curEventSignup = data[0].dataValues.eventSignups[x].dataValues;
+        for (
+          let y = 0;
+          y < curEventSignup.studentInstrumentSignups.length;
+          y++
+        ) {
+          const curStudentSignup =
+            curEventSignup.studentInstrumentSignups[y].dataValues;
+          await db.studentInstrumentSignup.destroy({
+            where: { id: curStudentSignup.id },
           });
         }
-        for (let y = 0; y < curEventTS.jurorTimeslots.length; y++) {
-          const curJurTS = curEventTS.jurorTimeslots[y].dataValues;
-          await db.jurorTimeslot.destroy({ where: { id: curJurTS.id } });
+        for (let y = 0; y < curEventSignup.critiques.length; y++) {
+          const curCritique = curEventSignup.critiques[y].dataValues;
+          await db.critique.destroy({ where: { id: curCritique.id } });
         }
-        for (let y = 0; y < curEventTS.timeslotSongs.length; y++) {
-          const curTSS = curEventTS.timeslotSongs[y].dataValues;
-          await db.timeslotSong.destroy({ where: { id: curTSS.id } });
+        for (let y = 0; y < curEventSignup.eventSignupPieces.length; y++) {
+          const curSignupPiece = curEventSignup.eventSignupPieces[y].dataValues;
+          await db.eventSignupPiece.destroy({
+            where: { id: curSignupPiece.id },
+          });
         }
 
-        db.eventTimeslot.destroy({ where: { id: curEventTS.id } });
+        db.eventSignup.destroy({ where: { id: curEventSignup.id } });
       }
 
       Event.destroy({
@@ -244,14 +266,14 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-exports.getStudentTimeslotsForEventId = (req, res) => {
+exports.getStudentInstrumentSignupsForEventId = (req, res) => {
   Event.findAll({
     where: { id: req.params.eventId },
     include: {
-      model: db.eventTimeslot,
+      model: db.eventSignup,
       required: true,
       include: {
-        model: db.studentTimeslot,
+        model: db.studentInstrumentSignup,
         required: true,
         include: {
           model: db.studentInstrument,
@@ -259,7 +281,7 @@ exports.getStudentTimeslotsForEventId = (req, res) => {
           include: {
             model: db.userRole,
             required: true,
-            as: "student",
+            as: "studentRole",
             include: {
               model: db.user,
               required: true,
@@ -279,136 +301,10 @@ exports.getStudentTimeslotsForEventId = (req, res) => {
     });
 };
 
-exports.getEventCritiquesBySemesterId = (req, res) => {
-  db.user
-    .findAll({
-      include: {
-        model: db.userRole,
-        required: true,
-        include: {
-          model: db.studentInstrument,
-          as: "student",
-          required: true,
-          include: {
-            model: db.studentTimeslot,
-            required: true,
-            include: [
-              {
-                model: db.eventTimeslot,
-                required: true,
-                include: {
-                  model: db.event,
-                  required: true,
-                  where: {
-                    semesterId: { [Op.eq]: req.params.semesterId },
-                  },
-                },
-              },
-              {
-                model: db.critique,
-                required: true,
-              },
-            ],
-          },
-        },
-      },
-    })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events.",
-      });
-    });
-};
-
-// Retrieve critiques by semester id and student id
-exports.getEventCritiquesBySemesterAndStudent = (req, res) => {
-  Event.findAll({
-    where: {
-      semesterId: { [Op.eq]: req.params.semesterId },
-    },
-    include: {
-      model: db.eventTimeslot,
-      required: true,
-      include: [
-        {
-          model: db.studentTimeslot,
-          required: true,
-          include: {
-            model: db.studentInstrument,
-            required: true,
-            include: [
-              {
-                model: db.instrument,
-                required: true,
-              },
-              {
-                model: db.userRole,
-                as: "student",
-                required: true,
-                include: {
-                  model: db.user,
-                  where: {
-                    id: { [Op.eq]: req.params.userId },
-                  },
-                  required: true,
-                },
-              },
-            ],
-          },
-        },
-        {
-          model: db.jurorTimeslot,
-          required: true,
-          include: [
-            {
-              model: db.userRole,
-              required: true,
-              include: {
-                model: db.user,
-                required: true,
-              },
-            },
-            {
-              model: db.critique,
-              required: true,
-            },
-          ],
-        },
-      ],
-    },
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events.",
-      });
-    });
-};
-
 // Retrieve all events by semester
 exports.getEventsBySemesterId = (req, res) => {
   Event.findAll({
     where: { semesterId: { [Op.eq]: req.params.semesterId } },
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events.",
-      });
-    });
-};
-
-// Get all event types
-exports.getAllEventTypes = (req, res) => {
-  Event.findAll({
-    attributes: [db.sequelize.fn("DISTINCT", db.sequelize.col("type")), "type"],
   })
     .then((data) => {
       res.send(data);

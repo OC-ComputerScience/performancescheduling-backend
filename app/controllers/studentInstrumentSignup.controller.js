@@ -5,27 +5,28 @@ const StudentTimeslot = db.studentTimeslot;
 // Create and Save a new studentTimeslot
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.studentInstrumentId) {
+  if (!req.body.eventSignupId) {
     res.status(400).send({
-      message: "studentInstrumentId can not be empty!",
+      message: "eventSignupId cannot be empty!",
     });
     return;
-  } else if (!req.body.eventTimeslotId) {
+  } else if (!req.body.studentInstrumentId) {
     res.status(400).send({
-      message: "eventTimeslotId can not be empty!",
+      message: "studentInstrumentId cannot be empty!",
     });
     return;
-  } else if (!req.body.facultyId) {
+  } else if (!req.body.instructorRoleId) {
     res.status(400).send({
-      message: "facultyId can not be empty!",
+      message: "instructorRoleId cannot be empty!",
     });
     return;
   }
 
   const studentTimeslot = {
+    eventSignupId: req.body.eventSignupId,
     studentInstrumentId: req.body.studentInstrumentId,
-    eventTimeslotId: req.body.eventTimeslotId,
-    facultyId: req.body.facultyId,
+    instructorRoleId: req.body.instructorRoleId,
+    accompanistRoleId: req.body.accompanistRoleId,
   };
 
   // Create and Save a new studentTimeslot

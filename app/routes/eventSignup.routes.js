@@ -9,7 +9,7 @@ module.exports = (app) => {
   router.get("/", [authenticate], eventSignup.findAll);
   // Retrieve a single eventSignup with id
   router.get("/:id", [authenticate], eventSignup.findById);
-  // Retrieve all eventSignups with eventId of id
+  // Retrieve all eventSignups with eventId
   router.get("/event/:id", [authenticate], eventSignup.findByEventId);
   // Update a eventSignup with id
   router.put("/:id", [authenticate], eventSignup.update);

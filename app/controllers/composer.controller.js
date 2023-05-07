@@ -4,12 +4,21 @@ const Composer = db.composer;
 
 // Create and Save a new composer
 exports.create = (req, res) => {
+  // Validate request
+  if (!req.body.status) {
+    res.status(400).send({
+      message: "status cannot be empty!",
+    });
+    return;
+  }
+
   const composer = {
-    fName: req.body.fName,
-    lName: req.body.lName,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     nationality: req.body.nationality,
     dateOfBirth: req.body.dateOfBirth,
     dateOfDeath: req.body.dateOfDeath,
+    status: req.body.status,
   };
 
   // Create and Save a new composer
@@ -27,9 +36,7 @@ exports.create = (req, res) => {
 
 // Retrieve all composers from the database
 exports.findAll = (req, res) => {
-  Composer.findAll({
-    order: [["fName"], ["lName"]],
-  })
+  Composer.findAll()
     .then((data) => {
       res.send(data);
     })

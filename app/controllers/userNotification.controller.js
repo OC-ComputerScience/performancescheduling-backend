@@ -1,163 +1,164 @@
 const db = require("../models");
 const { Op } = require("sequelize");
-const User = db.user;
+const UserNotification = db.userNotification;
 
-// Create and Save a new user
+// Create and Save a new userNotification
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.fName) {
+  if (!req.body.userRoleId) {
     res.status(400).send({
-      message: "fName can not be empty!",
+      message: "userRoleId cannot be empty!",
     });
     return;
-  } else if (!req.body.lName) {
+  } else if (!req.body.notificationId) {
     res.status(400).send({
-      message: "lName can not be empty!",
+      message: "notificationId cannot be empty!",
     });
     return;
-  } else if (!req.body.email) {
+  } else if (!req.body.text) {
     res.status(400).send({
-      message: "email can not be empty!",
+      message: "text cannot be empty!",
+    });
+    return;
+  } else if (!req.body.data) {
+    res.status(400).send({
+      message: "data cannot be empty!",
+    });
+    return;
+  } else if (!req.body.isCompleted === undefined) {
+    res.status(400).send({
+      message: "isCompleted cannot be empty!",
     });
     return;
   }
 
-  const user = {
-    fName: req.body.fName,
-    lName: req.body.lName,
-    email: req.body.email,
-    picture: req.body.picture,
-    lastRole: req.body.lastRole,
+  const userNotification = {
+    userRoleId: req.body.userRoleId,
+    notificationId: req.body.notificationId,
+    text: req.body.text,
+    data: req.body.data,
+    isCompleted: req.body.isCompleted,
   };
 
-  // Create and Save a new user
-  User.create(user)
+  // Create and Save a new userNotification
+  UserNotification.create(userNotification)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the user.",
+        message:
+          err.message ||
+          "Some error occurred while creating the userNotification.",
       });
     });
 };
 
-// Retrieve all users from the database
+// Retrieve all userNotifications from the database
 exports.findAll = (req, res) => {
-  User.findAll()
+  UserNotification.findAll()
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
+        message:
+          err.message ||
+          "Some error occurred while retrieving userNotifications.",
       });
     });
 };
 
-// Retrieve a(n) user by id
+// Retrieve a(n) userNotification by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  User.findByPk(id)
+  UserNotification.findByPk(id)
     .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: "Cannot find user with id=" + id,
+          message: "Cannot find userNotification with id=" + id,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving user with id=" + id,
+        message: "Error retrieving userNotification with id=" + id,
       });
     });
 };
 
-// Update a(n) user by the id in the request
+// Update a(n) userNotification by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  User.update(req.body, {
+  UserNotification.update(req.body, {
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "User was updated successfully.",
+          message: "UserNotification was updated successfully.",
         });
       } else {
         res.send({
           message:
-            "Cannot update user with id=" +
+            "Cannot update userNotification with id=" +
             id +
-            ". Maybe the user was not found or req.body is empty!",
+            ". Maybe the userNotification was not found or req.body is empty!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating user with id=" + id,
+        message: "Error updating userNotification with id=" + id,
       });
     });
 };
 
-// Delete a(n) user with the specified id in the request
+// Delete a(n) userNotification with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  User.destroy({
+  UserNotification.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "User was deleted successfully!",
+          message: "UserNotification was deleted successfully!",
         });
       } else {
         res.send({
           message:
-            "Cannot delete user with id=" +
+            "Cannot delete userNotification with id=" +
             id +
-            ". Maybe the user was not found",
+            ". Maybe the userNotification was not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete user with id=" + id,
+        message: "Could not delete userNotification with id=" + id,
       });
     });
 };
 
-// Delete all users from the database.
+// Delete all userNotifications from the database.
 exports.deleteAll = (req, res) => {
-  User.destroy({
+  UserNotification.destroy({
     where: {},
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} users were deleted successfully!` });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while removing all users.",
+      res.send({
+        message: `${nums} userNotifications were deleted successfully!`,
       });
-    });
-};
-
-exports.getAllWithRoles = (req, res) => {
-  User.findAll({
-    include: {
-      model: db.userRole,
-      required: false,
-    },
-  })
-    .then((data) => {
-      res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
+        message:
+          err.message ||
+          "Some error occurred while removing all userNotifications.",
       });
     });
 };

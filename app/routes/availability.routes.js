@@ -15,13 +15,17 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], availability.delete);
   // Delete all availability
   router.delete("/", [authenticate], availability.deleteAll);
-  // Get all availabilities by userId
-  router.get("/userId/:userId", [authenticate], availability.getByUser);
-  // Get all availabilities by userID and eventId
+  // Get all availabilities by userRoleId
   router.get(
-    "/userId/:userId/eventId/:eventId",
+    "/userRoleId/:userRoleId",
     [authenticate],
-    availability.getByUserAndEvent
+    availability.getByUserRole
+  );
+  // Get all availabilities by userRoleId and eventId
+  router.get(
+    "/userRoleId/:userRoleId/eventId/:eventId",
+    [authenticate],
+    availability.getByUserRoleAndEvent
   );
 
   app.use("/performanceapi/availability", router);

@@ -15,11 +15,11 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], eventSignupPiece.delete);
   // Delete all eventSignupPieces
   router.delete("/", [authenticate], eventSignupPiece.deleteAll);
-  // Get all songs by timeslot
+  // Get all songs by eventSignup
   router.get(
-    "/timeslotId/:timeslotId",
+    "/eventSignupId/:eventSignupId",
     [authenticate],
-    eventSignupPiece.getByEventId
+    eventSignupPiece.getByEventSignupId
   );
 
   app.use("/performanceapi/eventSignupPiece", router);

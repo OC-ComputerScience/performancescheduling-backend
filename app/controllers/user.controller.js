@@ -5,29 +5,51 @@ const User = db.user;
 // Create and Save a new user
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.fName) {
+  if (!req.body.firstName) {
     res.status(400).send({
-      message: "fName can not be empty!",
+      message: "firstName cannot be empty!",
     });
     return;
-  } else if (!req.body.lName) {
+  } else if (!req.body.lastName) {
     res.status(400).send({
-      message: "lName can not be empty!",
+      message: "lastName cannot be empty!",
+    });
+    return;
+  } else if (!req.body.honorific) {
+    res.status(400).send({
+      message: "honorific cannot be empty!",
     });
     return;
   } else if (!req.body.email) {
     res.status(400).send({
-      message: "email can not be empty!",
+      message: "email cannot be empty!",
+    });
+    return;
+  } else if (!req.body.authenticationType) {
+    res.status(400).send({
+      message: "authenticationType cannot be empty!",
+    });
+    return;
+  } else if (!req.body.status) {
+    res.status(400).send({
+      message: "status cannot be empty!",
     });
     return;
   }
 
   const user = {
-    fName: req.body.fName,
-    lName: req.body.lName,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    honorific: req.body.honorific,
     email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    authenticationType: req.body.authenticationType,
+    password: req.body.password,
     picture: req.body.picture,
-    lastRole: req.body.lastRole,
+    emailStatus: req.body.emailStatus,
+    textStatus: req.body.textStatus,
+    googleToken: req.body.googleToken,
+    status: req.body.status,
   };
 
   // Create and Save a new user

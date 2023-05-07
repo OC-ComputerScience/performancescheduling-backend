@@ -5,29 +5,39 @@ const Critique = db.critique;
 // Create and Save a new critique
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.type) {
+  if (!req.body.userRoleId) {
     res.status(400).send({
-      message: "type can not be empty!",
+      message: "userRoleId cannot be empty!",
     });
     return;
-  } else if (!req.body.jurorTimeslotId) {
+  } else if (!req.body.eventSignupId) {
     res.status(400).send({
-      message: "jurorTimeslotId can not be empty!",
+      message: "eventSignupId cannot be empty!",
     });
     return;
-  } else if (!req.body.studentTimeslotId) {
+  } else if (!req.body.overallComment) {
     res.status(400).send({
-      message: "studentTimeslotId can not be empty!",
+      message: "overallComment can not be empty!",
     });
     return;
   }
 
   const critique = {
-    type: req.body.type,
-    grade: req.body.grade,
-    comment: req.body.comment,
-    jurorTimeslotId: req.body.jurorTimeslotId,
-    studentTimeslotId: req.body.studentTimeslotId,
+    userRoleId: req.body.userRoleId,
+    eventSignupId: req.body.eventSignupId,
+    accuracyComment: req.body.accuracyComment,
+    accuracyGrade: req.body.accuracyGrade,
+    balanceComment: req.body.balanceComment,
+    balanceGrade: req.body.balanceGrade,
+    deportmentComment: req.body.deportmentComment,
+    deportmentGrade: req.body.deportmentGrade,
+    dictionComment: req.body.dictionComment,
+    dictionGrade: req.body.dictionGrade,
+    interpretationComment: req.body.interpretationComment,
+    interpretationGrade: req.body.interpretationGrade,
+    toneComment: req.body.toneComment,
+    toneGrade: req.body.toneGrade,
+    overallComment: req.body.overallComment,
   };
 
   // Create and Save a new critique
@@ -148,24 +158,100 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-exports.getCritiquesByTimeslotAndFaculty = (req, res) => {
-  db.eventTimeslot
-    .findAll({
-      where: { id: req.params.timeslotId },
-      include: {
-        model: db.studentTimeslot,
-        required: true,
-        include: {
-          model: db.critique,
+exports.getCritiqueByEventSignupAndJuror = (req, res) => {
+  Critique.findAll({
+    where: {
+      userRoleId: req.params.userRoleId,
+      eventSignupId: req.params.eventSignupId,
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+exports.getBySemesterId = (req, res) => {
+  Critique.findAll({
+    include: {
+      model: db.eventSignup,
+      required: true,
+      include: [
+        {
+          model: db.event,
           required: true,
-          include: {
-            model: db.jurorTimeslot,
-            required: true,
-            where: { jurorId: req.params.facultyId },
+          where: {
+            semesterId: req.params.semesterId,
           },
         },
-      },
+        {
+          model: db.studentInstrumentSignup,
+          required: true,
+          include: {
+            model: db.studentInstrument,
+            required: true,
+            include: {
+              model: db.userRole,
+              as: "studentRole",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          },
+        },
+      ],
+    },
+  })
+    .then((data) => {
+      res.send(data);
     })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+exports.getBySemesterIdAndStudentId = (req, res) => {
+  Critique.findAll({
+    include: {
+      model: db.eventSignup,
+      required: true,
+      include: [
+        {
+          model: db.event,
+          required: true,
+          where: {
+            semesterId: req.params.semesterId,
+          },
+        },
+        {
+          model: db.studentInstrumentSignup,
+          required: true,
+          include: {
+            model: db.studentInstrument,
+            required: true,
+            include: [
+              {
+                model: db.userRole,
+                as: "studentRole",
+                include: {
+                  model: db.user,
+                  required: true,
+                  where: { id: req.params.userId },
+                },
+              },
+              {
+                model: db.instrument,
+                required: true,
+              },
+            ],
+          },
+        },
+      ],
+    },
+  })
     .then((data) => {
       res.send(data);
     })

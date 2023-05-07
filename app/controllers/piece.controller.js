@@ -1,145 +1,156 @@
 const db = require("../models");
 const { Op } = require("sequelize");
-const Song = db.song;
+const Piece = db.piece;
 
-// Create and Save a new song
+// Create and Save a new piece
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
-    res.status(400).send({
-      message: "title can not be empty!",
-    });
-    return;
-  } else if (!req.body.composerId) {
+  if (!req.body.composerId) {
     res.status(400).send({
       message: "composerId can not be empty!",
     });
     return;
+  } else if (!req.body.title) {
+    res.status(400).send({
+      message: "title can not be empty!",
+    });
+    return;
+  } else if (!req.body.status) {
+    res.status(400).send({
+      message: "status can not be empty!",
+    });
+    return;
   }
 
-  const song = {
-    title: req.body.title,
+  const piece = {
     composerId: req.body.composerId,
+    title: req.body.title,
+    originalLanguage: req.body.originalLanguage,
+    originalLyrics: req.body.originalLyrics,
+    poeticTranslation: req.body.poeticTranslation,
+    literalTranslation: req.body.literalTranslation,
+    status: req.body.status,
   };
 
-  // Create and Save a new song
-  Song.create(song)
+  // Create and Save a new piece
+  Piece.create(piece)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the song.",
+        message: err.message || "Some error occurred while creating the piece.",
       });
     });
 };
 
-// Retrieve all songs from the database
+// Retrieve all pieces from the database
 exports.findAll = (req, res) => {
-  Song.findAll()
+  Piece.findAll()
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving songs.",
+        message: err.message || "Some error occurred while retrieving pieces.",
       });
     });
 };
 
-// Retrieve a(n) song by id
+// Retrieve a(n) piece by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  Song.findByPk(id)
+  Piece.findByPk(id)
     .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: "Cannot find song with id=" + id,
+          message: "Cannot find piece with id=" + id,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving song with id=" + id,
+        message: "Error retrieving piece with id=" + id,
       });
     });
 };
 
-// Update a(n) song by the id in the request
+// Update a(n) piece by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  Song.update(req.body, {
+  Piece.update(req.body, {
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Song was updated successfully.",
+          message: "Piece was updated successfully.",
         });
       } else {
         res.send({
           message:
-            "Cannot update song with id=" +
+            "Cannot update piece with id=" +
             id +
-            ". Maybe the song was not found or req.body is empty!",
+            ". Maybe the piece was not found or req.body is empty!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating song with id=" + id,
+        message: "Error updating piece with id=" + id,
       });
     });
 };
 
-// Delete a(n) song with the specified id in the request
+// Delete a(n) piece with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Song.destroy({
+  Piece.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Song was deleted successfully!",
+          message: "Piece was deleted successfully!",
         });
       } else {
         res.send({
           message:
-            "Cannot delete song with id=" +
+            "Cannot delete piece with id=" +
             id +
-            ". Maybe the song was not found",
+            ". Maybe the piece was not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete song with id=" + id,
+        message: "Could not delete piece with id=" + id,
       });
     });
 };
 
-// Delete all songs from the database.
+// Delete all pieces from the database.
 exports.deleteAll = (req, res) => {
-  Song.destroy({
+  Piece.destroy({
     where: {},
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} songs were deleted successfully!` });
+      res.send({ message: `${nums} pieces were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all songs.",
+        message:
+          err.message || "Some error occurred while removing all pieces.",
       });
     });
 };
 
 // Get by composer
 exports.getByComposer = (req, res) => {
-  Song.findAll({
+  Piece.findAll({
     where: {
       composerId: { [Op.eq]: req.params.composerId },
     },
@@ -149,7 +160,7 @@ exports.getByComposer = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving songs.",
+        message: err.message || "Some error occurred while retrieving pieces.",
       });
     });
 };

@@ -5,35 +5,29 @@ const Availability = db.availability;
 // Create and Save a new availability
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.date) {
+  if (!req.body.startTime) {
     res.status(400).send({
-      message: "date can not be empty!",
-    });
-    return;
-  } else if (!req.body.startTime) {
-    res.status(400).send({
-      message: "start time can not be empty!",
+      message: "start time cannot be empty!",
     });
     return;
   } else if (!req.body.endTime) {
     res.status(400).send({
-      message: "end time can not be empty!",
+      message: "end time cannot be empty!",
     });
     return;
-  } else if (!req.body.userId) {
+  } else if (!req.body.userRoleId) {
     res.status(400).send({
-      message: "userId can not be empty!",
+      message: "userRoleId cannot be empty!",
     });
     return;
   } else if (!req.body.eventId) {
     res.status(400).send({
-      message: "eventId can not be empty!",
+      message: "eventId cannot be empty!",
     });
     return;
   }
 
   const availability = {
-    date: req.body.date,
     startTime: req.body.startTime,
     endTime: req.body.endTime,
     userId: req.body.userId,
@@ -158,11 +152,11 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-// Get all availability for a user
-exports.getByUser = (req, res) => {
+// Get all availability by a userRoleId
+exports.getByUserRole = (req, res) => {
   Availability.findAll({
     where: {
-      userId: { [Op.eq]: req.params.userId },
+      userRoleId: { [Op.eq]: req.params.userRoleId },
     },
   })
     .then((data) => {
@@ -176,11 +170,11 @@ exports.getByUser = (req, res) => {
     });
 };
 
-//
-exports.getByUserAndEvent = (req, res) => {
+// Get all availabilities by userRoleId and eventId
+exports.getByUserRoleAndEvent = (req, res) => {
   Availability.findAll({
     where: {
-      userId: { [Op.eq]: req.params.userId },
+      userRoleId: { [Op.eq]: req.params.userRoleId },
       eventId: { [Op.eq]: req.params.eventId },
     },
   })
