@@ -15,6 +15,11 @@ exports.create = (req, res) => {
       message: "description cannot be empty!",
     });
     return;
+  } else if (!req.body.creditHours) {
+    res.status(400).send({
+      message: "creditHours cannot be empty!",
+    });
+    return;
   } else if (!req.body.status) {
     res.status(400).send({
       message: "status cannot be empty!",
@@ -25,6 +30,7 @@ exports.create = (req, res) => {
   const level = {
     name: req.body.name,
     description: req.body.description,
+    creditHours: req.body.creditHours,
     status: req.body.status,
   };
 

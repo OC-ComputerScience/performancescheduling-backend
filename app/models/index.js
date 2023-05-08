@@ -152,7 +152,7 @@ db.session.belongsTo(db.user, {
 
 //StudentInstrument FKs
 db.level.hasMany(db.studentInstrument, {
-  foreignKey: { allowNull: false },
+  foreignKey: { allowNull: true },
 });
 db.userRole.hasMany(db.studentInstrument, {
   as: "studentRole",
@@ -171,7 +171,7 @@ db.instrument.hasMany(db.studentInstrument, {
 });
 
 db.studentInstrument.belongsTo(db.level, {
-  foreignKey: { allowNull: false },
+  foreignKey: { allowNull: true },
 });
 db.studentInstrument.belongsTo(db.userRole, {
   as: "studentRole",
@@ -221,7 +221,7 @@ db.userRole.hasMany(db.studentInstrumentSignup, {
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
 db.userRole.hasMany(db.studentInstrumentSignup, {
-  foreignKey: { name: "accompanistRoleId", allowNull: false },
+  foreignKey: { name: "accompanistRoleId", allowNull: true },
 });
 
 db.studentInstrumentSignup.belongsTo(db.eventSignup, {
@@ -234,7 +234,7 @@ db.studentInstrumentSignup.belongsTo(db.userRole, {
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
 db.studentInstrumentSignup.belongsTo(db.userRole, {
-  foreignKey: { name: "accompanistRoleId", allowNull: false },
+  foreignKey: { name: "accompanistRoleId", allowNull: true },
 });
 
 //StudentPiece FKs
@@ -271,7 +271,7 @@ db.userNotification.belongsTo(db.notification, {
 
 //UserRole FKs
 db.major.hasMany(db.userRole, {
-  foreignKey: { allowNull: false },
+  foreignKey: { allowNull: true },
 });
 db.role.hasMany(db.userRole, {
   foreignKey: { allowNull: false },
@@ -281,7 +281,7 @@ db.user.hasMany(db.userRole, {
 });
 
 db.userRole.belongsTo(db.major, {
-  foreignKey: { allowNull: false },
+  foreignKey: { allowNull: true },
 });
 db.userRole.belongsTo(db.role, {
   foreignKey: { allowNull: false },

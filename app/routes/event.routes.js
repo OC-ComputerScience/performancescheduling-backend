@@ -23,12 +23,6 @@ module.exports = (app) => {
     [authenticate],
     event.getStudentInstrumentSignupsForEventId
   );
-  // Retrieve critiques by semester id and student id
-  router.get(
-    "/semesterCritiques/:semesterId/user/:userId",
-    [authenticate],
-    event.getEventCritiquesBySemesterAndStudent
-  );
   // Retrieve all events within a semester
   router.get(
     "/semesterId/:semesterId",

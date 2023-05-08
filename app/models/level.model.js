@@ -14,6 +14,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    creditHours: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     status: {
       type: Sequelize.STRING,
       allowNull: false,

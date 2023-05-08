@@ -10,11 +10,6 @@ exports.create = (req, res) => {
       message: "role cannot be empty!",
     });
     return;
-  } else if (!req.body.type) {
-    res.status(400).send({
-      message: "type cannot be empty!",
-    });
-    return;
   } else if (!req.body.status) {
     res.status(400).send({
       message: "status cannot be empty!",

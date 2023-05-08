@@ -12,7 +12,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     type: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     status: {
       type: Sequelize.STRING,
