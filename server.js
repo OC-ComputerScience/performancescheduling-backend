@@ -26,6 +26,7 @@ require("./app/routes/eventSignupPiece.routes.js")(app);
 require("./app/routes/eventType.routes.js")(app);
 require("./app/routes/instrument.routes.js")(app);
 require("./app/routes/level.routes.js")(app);
+require("./app/routes/location.routes.js")(app);
 require("./app/routes/major.routes.js")(app);
 require("./app/routes/notification.routes.js")(app);
 require("./app/routes/piece.routes.js")(app);

@@ -34,6 +34,7 @@ db.eventSignupPiece = require("./eventSignupPiece.model.js")(
 db.eventType = require("./eventType.model.js")(sequelize, Sequelize);
 db.instrument = require("./instrument.model.js")(sequelize, Sequelize);
 db.level = require("./level.model.js")(sequelize, Sequelize);
+db.location = require("./location.model.js")(sequelize, Sequelize);
 db.major = require("./major.model.js")(sequelize, Sequelize);
 db.notification = require("./notification.model.js")(sequelize, Sequelize);
 db.piece = require("./piece.model.js")(sequelize, Sequelize);
@@ -97,6 +98,9 @@ db.eventType.hasMany(db.event, {
 db.semester.hasMany(db.event, {
   foreignKey: { allowNull: false },
 });
+db.location.hasMany(db.event, {
+  foreignKey: { allowNull: false },
+});
 
 db.event.belongsTo(db.userRole, {
   foreignKey: { name: "privateUserRoleId", allowNull: true },
@@ -105,6 +109,9 @@ db.event.belongsTo(db.eventType, {
   foreignKey: { allowNull: false },
 });
 db.event.belongsTo(db.semester, {
+  foreignKey: { allowNull: false },
+});
+db.event.belongsTo(db.location, {
   foreignKey: { allowNull: false },
 });
 
