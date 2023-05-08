@@ -40,6 +40,11 @@ exports.create = (req, res) => {
       message: "semesterId can not be empty!",
     });
     return;
+  } else if (!req.body.locationId) {
+    res.status(400).send({
+      message: "locationId can not be empty!",
+    });
+    return;
   }
 
   const event = {
@@ -51,6 +56,7 @@ exports.create = (req, res) => {
     privateUserRoleId: req.body.privateUserRoleId,
     eventTypeId: req.body.eventTypeId,
     semesterId: req.body.semesterId,
+    locationId: req.body.locationId,
   };
 
   // Create and Save a new event
