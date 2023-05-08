@@ -30,7 +30,7 @@ exports.create = (req, res) => {
   const availability = {
     startTime: req.body.startTime,
     endTime: req.body.endTime,
-    userId: req.body.userId,
+    userRoleId: req.body.userRoleId,
     eventId: req.body.eventId,
   };
 

@@ -1,8 +1,8 @@
 const db = require("../models");
 const { Op } = require("sequelize");
-const StudentTimeslot = db.studentTimeslot;
+const StudentInstrumentSignup = db.studentInstrumentSignup;
 
-// Create and Save a new studentTimeslot
+// Create and Save a new studentInstrumentSignup
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.eventSignupId) {
@@ -22,15 +22,15 @@ exports.create = (req, res) => {
     return;
   }
 
-  const studentTimeslot = {
+  const studentInstrumentSignup = {
     eventSignupId: req.body.eventSignupId,
     studentInstrumentId: req.body.studentInstrumentId,
     instructorRoleId: req.body.instructorRoleId,
     accompanistRoleId: req.body.accompanistRoleId,
   };
 
-  // Create and Save a new studentTimeslot
-  StudentTimeslot.create(studentTimeslot)
+  // Create and Save a new studentInstrumentSignup
+  StudentInstrumentSignup.create(studentInstrumentSignup)
     .then((data) => {
       res.send(data);
     })
@@ -38,14 +38,14 @@ exports.create = (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          "Some error occurred while creating the studentTimeslot.",
+          "Some error occurred while creating the studentInstrumentSignup.",
       });
     });
 };
 
-// Retrieve all studentTimeslots from the database
+// Retrieve all studentInstrumentSignups from the database
 exports.findAll = (req, res) => {
-  StudentTimeslot.findAll()
+  StudentInstrumentSignup.findAll()
     .then((data) => {
       res.send(data);
     })
@@ -53,101 +53,101 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          "Some error occurred while retrieving studentTimeslots.",
+          "Some error occurred while retrieving studentInstrumentSignups.",
       });
     });
 };
 
-// Retrieve a(n) studentTimeslot by id
+// Retrieve a(n) studentInstrumentSignup by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  StudentTimeslot.findByPk(id)
+  StudentInstrumentSignup.findByPk(id)
     .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: "Cannot find studentTimeslot with id=" + id,
+          message: "Cannot find studentInstrumentSignup with id=" + id,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving studentTimeslot with id=" + id,
+        message: "Error retrieving studentInstrumentSignup with id=" + id,
       });
     });
 };
 
-// Update a(n) studentTimeslot by the id in the request
+// Update a(n) studentInstrumentSignup by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  StudentTimeslot.update(req.body, {
+  StudentInstrumentSignup.update(req.body, {
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "StudentTimeslot was updated successfully.",
+          message: "StudentInstrumentSignup was updated successfully.",
         });
       } else {
         res.send({
           message:
-            "Cannot update studentTimeslot with id=" +
+            "Cannot update studentInstrumentSignup with id=" +
             id +
-            ". Maybe the studentTimeslot was not found or req.body is empty!",
+            ". Maybe the studentInstrumentSignup was not found or req.body is empty!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating studentTimeslot with id=" + id,
+        message: "Error updating studentInstrumentSignup with id=" + id,
       });
     });
 };
 
-// Delete a(n) studentTimeslot with the specified id in the request
+// Delete a(n) studentInstrumentSignup with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  StudentTimeslot.destroy({
+  StudentInstrumentSignup.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "StudentTimeslot was deleted successfully!",
+          message: "StudentInstrumentSignup was deleted successfully!",
         });
       } else {
         res.send({
           message:
-            "Cannot delete studentTimeslot with id=" +
+            "Cannot delete studentInstrumentSignup with id=" +
             id +
-            ". Maybe the studentTimeslot was not found",
+            ". Maybe the studentInstrumentSignup was not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete studentTimeslot with id=" + id,
+        message: "Could not delete studentInstrumentSignup with id=" + id,
       });
     });
 };
 
-// Delete all studentTimeslots from the database.
+// Delete all studentInstrumentSignups from the database.
 exports.deleteAll = (req, res) => {
-  StudentTimeslot.destroy({
+  StudentInstrumentSignup.destroy({
     where: {},
     truncate: false,
   })
     .then((nums) => {
       res.send({
-        message: `${nums} studentTimeslots were deleted successfully!`,
+        message: `${nums} studentInstrumentSignups were deleted successfully!`,
       });
     })
     .catch((err) => {
       res.status(500).send({
         message:
           err.message ||
-          "Some error occurred while removing all studentTimeslots.",
+          "Some error occurred while removing all studentInstrumentSignups.",
       });
     });
 };

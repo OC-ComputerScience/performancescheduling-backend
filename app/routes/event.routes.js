@@ -19,7 +19,7 @@ module.exports = (app) => {
   router.delete("/", [authenticate], event.deleteAll);
   // Retrieve student signups for eventId
   router.get(
-    "/critiqueTimeslots/:eventId",
+    "/studentInstrumentSignups/:eventId",
     [authenticate],
     event.getStudentInstrumentSignupsForEventId
   );

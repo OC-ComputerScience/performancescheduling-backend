@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATEONLY,
       allowNull: false,
     },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
   });
 
   return Semester;

@@ -181,7 +181,7 @@ exports.getByUserId = (req, res) => {
       },
       {
         model: db.userRole,
-        as: "facultyRole",
+        as: "instructorRole",
         required: true,
         include: [
           {
@@ -237,7 +237,7 @@ exports.getStudentsForInstructorId = (req, res) => {
           model: StudentInstrument,
           required: true,
           as: "studentRole",
-          where: { instructorRoleId: req.params.id },
+          where: { instructorRoleId: req.params.instructorId },
           include: {
             model: db.instrument,
             required: true,

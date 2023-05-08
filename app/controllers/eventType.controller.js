@@ -30,7 +30,7 @@ exports.create = (req, res) => {
       message: "defaultSlotDuration cannot be empty!",
     });
     return;
-  } else if (!req.body.isPrivate === undefined) {
+  } else if (req.body.isPrivate === undefined) {
     res.status(400).send({
       message: "isPrivate cannot be empty!",
     });

@@ -19,7 +19,7 @@ module.exports = (app) => {
   router.get("/userId/:userId", [authenticate], studentInstrument.getByUserId);
   // Get students for instructor id
   router.get(
-    "/students/instructorId/:id",
+    "/instructorId/:instructorId",
     [authenticate],
     studentInstrument.getStudentsForInstructorId
   );

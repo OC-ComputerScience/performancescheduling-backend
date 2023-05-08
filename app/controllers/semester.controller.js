@@ -161,7 +161,7 @@ exports.getSemesterByDate = (req, res) => {
     },
   })
     .then((data) => {
-      res.send(data);
+      res.send(data[0]);
     })
     .catch((err) => {
       res.stats(500).send({

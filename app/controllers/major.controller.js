@@ -10,7 +10,7 @@ exports.create = (req, res) => {
       message: "name cannot be empty!",
     });
     return;
-  } else if (!req.body.isMusicMajor === undefined) {
+  } else if (req.body.isMusicMajor === undefined) {
     res.status(400).send({
       message: "isMusicMajor cannot be empty!",
     });
