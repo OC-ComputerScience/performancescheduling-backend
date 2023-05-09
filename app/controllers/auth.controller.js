@@ -1,6 +1,8 @@
 const db = require("../models");
 const authconfig = require("../config/auth.config");
 const User = db.user;
+const Role = db.role;
+const UserRole = db.userRole;
 const Session = db.session;
 
 const { google } = require("googleapis");
@@ -44,18 +46,58 @@ exports.login = async (req, res) => {
     .then((data) => {
       if (data != null) {
         user = data.dataValues;
+        console.log(user);
       } else {
         // create a new User and save to database
         user = {
-          fName: firstName,
-          lName: lastName,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           picture: picture,
+          authenticationType: "OC",
+          status: "Active",
         };
       }
     })
     .catch((err) => {
       res.status(500).send({ message: err.message });
+    });
+
+  await UserRole.findAndCountAll({
+    where: { userId: user.id },
+    include: {
+      model: Role,
+      attributes: [
+        ["role", "roleName"],
+        ["status", "roleStatus"],
+        ["type", "roleType"],
+      ],
+    },
+  })
+    .then((data) => {
+      if (data) {
+        console.log(data);
+        user.roles = [];
+        for (let role of data.rows) {
+          console.log("++++++++++++", role.dataValues);
+          role.dataValues = {
+            ...role.dataValues,
+            ...role.dataValues.role.dataValues,
+          };
+          delete role.dataValues.role;
+          role.dataValues.role = role.dataValues.roleName;
+          delete role.dataValues.roleName;
+
+          user.roles.push(role.dataValues);
+        }
+      } else {
+        user.roles = [];
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
     });
 
   // this lets us get the user id
@@ -66,16 +108,15 @@ exports.login = async (req, res) => {
       .then((data) => {
         console.log("user was registered");
         user = data.dataValues;
-        // res.send({ message: "User was registered successfully!" });
       })
       .catch((err) => {
+        console.log(err);
         res.status(500).send({ message: err.message });
       });
   } else {
-    console.log(user);
     // doing this to ensure that the user's name is the one listed with Google
-    user.fName = firstName;
-    user.lName = lastName;
+    user.firstName = firstName;
+    user.lastName = lastName;
     user.picture = picture;
     console.log(user);
     await User.update(user, { where: { id: user.id } })
@@ -130,10 +171,11 @@ exports.login = async (req, res) => {
           // if the session is still valid, then send info to the front end
           let userInfo = {
             email: user.email,
-            fName: user.fName,
-            lName: user.lName,
+            firstName: user.firstName,
+            lastName: user.lastName,
             userId: user.id,
             token: session.token,
+            role: user.roles,
             // refresh_token: user.refresh_token,
             // expiration_date: user.expiration_date
           };
@@ -171,11 +213,12 @@ exports.login = async (req, res) => {
       .then(() => {
         let userInfo = {
           email: user.email,
-          fName: user.fName,
-          lName: user.lName,
+          firstName: user.firstName,
+          lastName: user.lastName,
           picture: user.picture,
           userId: user.id,
           token: token,
+          roles: user.roles,
           // refresh_token: user.refresh_token,
           // expiration_date: user.expiration_date
         };
