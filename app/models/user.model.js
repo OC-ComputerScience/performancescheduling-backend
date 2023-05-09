@@ -16,7 +16,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     honorific: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     email: {
       type: Sequelize.STRING,

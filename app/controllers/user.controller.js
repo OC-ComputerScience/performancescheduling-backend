@@ -15,11 +15,6 @@ exports.create = (req, res) => {
       message: "lastName cannot be empty!",
     });
     return;
-  } else if (!req.body.honorific) {
-    res.status(400).send({
-      message: "honorific cannot be empty!",
-    });
-    return;
   } else if (!req.body.email) {
     res.status(400).send({
       message: "email cannot be empty!",
