@@ -34,6 +34,7 @@ exports.create = (req, res) => {
     studentClassification: req.body.studentClassification,
     studentLessonHours: req.body.studentLessonHours,
     studentSemesters: req.body.studentSemesters,
+    facultyType: req.body.facultyType,
     title: req.body.title,
     status: req.body.status,
   };

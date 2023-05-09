@@ -70,7 +70,6 @@ exports.login = async (req, res) => {
       attributes: [
         ["role", "roleName"],
         ["status", "roleStatus"],
-        ["type", "roleType"],
       ],
     },
   })
