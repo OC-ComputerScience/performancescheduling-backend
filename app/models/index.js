@@ -225,9 +225,11 @@ db.studentInstrument.hasMany(db.studentInstrumentSignup, {
   foreignKey: { allowNull: false },
 });
 db.userRole.hasMany(db.studentInstrumentSignup, {
+  as: "instructorRoleSignup",
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
 db.userRole.hasMany(db.studentInstrumentSignup, {
+  as: "accompanistRoleSignup",
   foreignKey: { name: "accompanistRoleId", allowNull: true },
 });
 
@@ -238,9 +240,11 @@ db.studentInstrumentSignup.belongsTo(db.studentInstrument, {
   foreignKey: { allowNull: false },
 });
 db.studentInstrumentSignup.belongsTo(db.userRole, {
+  as: "instructorRoleSignup",
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
 db.studentInstrumentSignup.belongsTo(db.userRole, {
+  as: "accompanistRoleSignup",
   foreignKey: { name: "accompanistRoleId", allowNull: true },
 });
 
