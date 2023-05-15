@@ -19,7 +19,6 @@ exports.create = (req, res) => {
 
   const role = {
     role: req.body.role,
-    type: req.body.type,
     status: req.body.status,
   };
 

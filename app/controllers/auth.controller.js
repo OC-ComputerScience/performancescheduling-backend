@@ -64,13 +64,12 @@ exports.login = async (req, res) => {
     });
 
   await UserRole.findAndCountAll({
-    where: { userId: user.id },
+    where: { userId: user.id, status: "Active" },
     include: {
       model: Role,
       attributes: [
         ["role", "roleName"],
         ["status", "roleStatus"],
-        ["type", "roleType"],
       ],
     },
   })
