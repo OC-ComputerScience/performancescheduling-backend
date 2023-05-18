@@ -335,3 +335,101 @@ exports.getEventsBySemesterId = (req, res) => {
       });
     });
 };
+
+// Retrieve all events by student
+exports.getEventsByStudentId = (req, res) => {
+  Event.findAll({
+    include: [
+      {
+        model: db.semester,
+        required: true,
+      },
+      {
+        model: db.eventType,
+        required: true,
+      },
+      {
+        model: db.location,
+        required: true,
+      },
+      {
+        model: db.eventSignup,
+        required: true,
+        include: [
+          {
+            model: db.eventSignupPiece,
+            required: true,
+            include: {
+              model: db.piece,
+              required: true,
+              include: {
+                model: db.composer,
+                required: true,
+              },
+            },
+          },
+          {
+            model: db.critique,
+            required: false,
+            include: {
+              model: db.userRole,
+              required: true,
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          },
+          {
+            model: db.studentInstrumentSignup,
+            required: true,
+            include: [
+              {
+                model: db.userRole,
+                as: "instructorRoleSignup",
+                required: true,
+                include: {
+                  model: db.user,
+                  required: true,
+                },
+              },
+              {
+                model: db.userRole,
+                as: "accompanistRoleSignup",
+                required: false,
+                include: {
+                  model: db.user,
+                  required: true,
+                },
+              },
+              {
+                model: db.studentInstrument,
+                required: true,
+                include: [
+                  {
+                    model: db.instrument,
+                    required: true,
+                  },
+                  {
+                    model: db.userRole,
+                    as: "studentRole",
+                    required: true,
+                    where: { userId: req.params.userId },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
+      });
+    });
+};
