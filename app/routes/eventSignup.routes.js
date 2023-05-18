@@ -17,6 +17,12 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], eventSignup.delete);
   // Delete all eventSignups
   router.delete("/", [authenticate], eventSignup.deleteAll);
+  // Retrieve all events by student
+  router.get(
+    "/userId/:userId",
+    [authenticate],
+    eventSignup.getEventsByStudentId
+  );
 
   app.use("/performanceapi/eventSignup", router);
 };

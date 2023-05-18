@@ -30,8 +30,5 @@ module.exports = (app) => {
     event.getEventsBySemesterId
   );
 
-  // Retrieve all events by student
-  router.get("/userId/:userId", [authenticate], event.getEventsByStudentId);
-
   app.use("/performanceapi/event", router);
 };
