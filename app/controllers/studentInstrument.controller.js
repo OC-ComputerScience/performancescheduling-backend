@@ -250,6 +250,22 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                   },
                 ],
               },
+              {
+                model: db.eventSignupPiece,
+                required: true,
+                include: [
+                  {
+                    model: db.piece,
+                    required: true,
+                    include: [
+                      {
+                        model: db.composer,
+                        required: true,
+                      },
+                    ],
+                  },
+                ],
+              },
             ],
           },
           {
