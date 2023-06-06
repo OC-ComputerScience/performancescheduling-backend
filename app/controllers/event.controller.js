@@ -113,6 +113,16 @@ exports.findDateAndAfter = (req, res) => {
         [Op.gte]: date,
       },
     },
+    include: [
+      {
+        model: db.location,
+        required: true,
+      },
+      {
+        model: db.eventSignup,
+        required: true,
+      },
+    ],
   })
     .then((data) => {
       if (data) {
