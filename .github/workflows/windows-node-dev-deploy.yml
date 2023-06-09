@@ -14,9 +14,6 @@ jobs:
       DB_PW: ${{ secrets.DEV_DB_PW}}
       DB_USER: ${{ secrets.DEV_DB_USER }}
       DB_NAME: ${{ secrets.DEV_DB_NAME }}
-      VUE_APP_CLIENT_ID: ${{secrets.VUE_APP_CLIENT_ID}}
-      VUE_APP_API_URL: ${{secrets.VUE_APP_API_URL}}
-      VUE_APP_CLIENT_URL: ${{secrets.VUE_APP_CLIENT_URL}}
       GOOGLE_AUDIENCE: ${{secrets.GOOGLE_AUDIENCE}}
       CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
 
