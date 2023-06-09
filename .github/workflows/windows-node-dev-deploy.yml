@@ -1,0 +1,62 @@
+name: Deploy to Windows Dev
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - dev
+
+jobs:
+  windows-deploy:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DEV_DB_HOST }}
+      DB_PW: ${{ secrets.DEV_DB_PW}}
+      DB_USER: ${{ secrets.DEV_DB_USER }}
+      DB_NAME: ${{ secrets.DEV_DB_NAME }}
+      VUE_APP_CLIENT_ID: ${{secrets.VUE_APP_CLIENT_ID}}
+      VUE_APP_API_URL: ${{secrets.VUE_APP_API_URL}}
+      VUE_APP_CLIENT_URL: ${{secrets.VUE_APP_CLIENT_URL}}
+      GOOGLE_AUDIENCE: ${{secrets.GOOGLE_AUDIENCE}}
+      CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: dev
+      - uses: actions/setup-node@v1
+      - run: npm install
+
+      - run: |
+          touch .env
+          echo db_host="$DB_HOST" >> .env
+          echo db_pw="$DB_PW" >> .env
+          echo db_user="$DB_USER" >> .env
+          echo db_name="$DB_NAME" >> .env
+          echo vue_app_client_id="$VUE_APP_CLIENT_ID" >> .env
+          echo vue_app_api_url ="$VUE_APP_API_URL" >> .env
+          echo vue_app_client_url = "https://performancedev.oc.edu" >> .env
+          echo google_audience ="$GOOGLE_AUDIENCE" >> .env
+          echo client_secret = "$CLIENT_SECRET" >> .env
+          echo url = "https://performancedev.oc.edu" >> .env
+
+      - run: npm run bundle
+
+      - name: Copy folder content recursively to remote
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: deploy/
+          remote: c:/nodeapps/performance-backend
+          recursive: true
+          host: "performancedev.oc.edu"
+          username: "david.north"
+          privateKey: ${{ secrets.DEV_WIN_SERVER_SSH_KEY  }}
+          password: ${{ secrets.PASSWORD }}
+
+      - name: Command via ssh
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: '.\deploy-performance-backend'
+          host: "performancedev.oc.edu"
+          username: "david.north"
+          privateKey: ${{ secrets.DEV_WIN_SERVER_SSH_KEY  }}
