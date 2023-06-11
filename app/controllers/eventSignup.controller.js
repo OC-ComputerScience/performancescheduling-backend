@@ -264,10 +264,6 @@ exports.getEventsByStudentId = (req, res) => {
             model: db.location,
             required: true,
           },
-          {
-            model: db.eventSignup,
-            required: true,
-          },
         ],
       },
       {
