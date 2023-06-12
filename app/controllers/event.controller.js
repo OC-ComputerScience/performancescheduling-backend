@@ -122,6 +122,10 @@ exports.findDateAndAfter = (req, res) => {
         model: db.eventSignup,
         required: true,
       },
+      {
+        model: db.eventType,
+        required: true,
+      },
     ],
   })
     .then((data) => {
