@@ -89,6 +89,29 @@ exports.findById = (req, res) => {
     });
 };
 
+// Get all notifications for a user's role
+exports.getByUserRoleId = (req, res) => {
+  UserNotification.findAll({
+    where: { userRoleId: { [Op.eq]: req.params.userRoleId } },
+    include: [
+      {
+        model: db.notification,
+        required: true,
+      },
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving userNotifications.",
+      });
+    });
+};
+
 // Update a(n) userNotification by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;

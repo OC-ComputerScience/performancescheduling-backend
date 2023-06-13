@@ -9,6 +9,12 @@ module.exports = (app) => {
   router.get("/", [authenticate], userNotification.findAll);
   // Retrieve a single userNotification with id
   router.get("/:id", [authenticate], userNotification.findById);
+  // Get by userRoleId
+  router.get(
+    "/userRoleId/:userRoleId",
+    [authenticate],
+    userNotification.getByUserRoleId
+  );
   // Update a userNotification with id
   router.put("/:id", [authenticate], userNotification.update);
   // Delete a userNotification with id
