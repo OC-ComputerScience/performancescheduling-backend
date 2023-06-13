@@ -228,6 +228,8 @@ exports.getByUserId = (req, res) => {
 };
 
 exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
+  console.log("***********************", req.params.date);
+  let date = req.params.date;
   StudentInstrument.findAll({
     where: { studentRoleId: { [Op.eq]: req.params.userRoleId } },
     attributes: [["id", "studentInstrumentId"]],
@@ -243,6 +245,9 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
               {
                 model: db.event,
                 required: true,
+                where: {
+                  date: { [Op.gte]: date },
+                },
                 include: [
                   {
                     model: db.location,
