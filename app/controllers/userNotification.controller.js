@@ -93,6 +93,12 @@ exports.findById = (req, res) => {
 exports.getByUserRoleId = (req, res) => {
   UserNotification.findAll({
     where: { userRoleId: { [Op.eq]: req.params.userRoleId } },
+    include: [
+      {
+        model: db.notification,
+        required: true,
+      },
+    ],
   })
     .then((data) => {
       res.send(data);
