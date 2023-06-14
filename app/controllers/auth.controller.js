@@ -14,8 +14,6 @@ let googleUser = {};
 const google_id = process.env.CLIENT_ID;
 
 exports.login = async (req, res) => {
-  console.log(req.body);
-
   var googleToken = req.body.credential;
 
   const { OAuth2Client } = require("google-auth-library");
@@ -26,7 +24,6 @@ exports.login = async (req, res) => {
       audience: google_id,
     });
     googleUser = ticket.getPayload();
-    console.log("Google payload is " + JSON.stringify(googleUser));
   }
   await verify().catch(console.error);
 
@@ -43,10 +40,41 @@ exports.login = async (req, res) => {
       email: email,
     },
   })
-    .then((data) => {
+    .then(async (data) => {
       if (data != null) {
+        // doing this to ensure that the user's name is the one listed with Google
         user = data.dataValues;
-        console.log(user);
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.picture = picture;
+        await User.update(user, {
+          where: { id: user.id },
+        })
+          .then((num) => {
+            if (num == 1) {
+              console.log("updated user's name");
+            } else {
+              console.log(
+                `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
+              );
+            }
+          })
+          .catch((err) => {
+            console.log("Error updating User with id=" + user.id + " " + err);
+          });
+
+        await UserRole.findAll({
+          where: { userId: user.id, status: "Active" },
+          include: {
+            model: Role,
+          },
+        })
+          .then((data) => {
+            user.roles = data;
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
       } else {
         // create a new User and save to database
         user = {
@@ -57,83 +85,38 @@ exports.login = async (req, res) => {
           authenticationType: "OC",
           status: "Active",
         };
+
+        await User.create(user)
+          .then((data) => {
+            user = data.dataValues;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        var userRole = {
+          userId: user.id,
+          status: "Active",
+        };
+
+        if (email.includes("@eagles.oc.edu")) {
+          userRole.roleId = 1;
+        } else if (email.includes("@oc.edu")) {
+          userRole.roleId = 2;
+        }
+
+        await UserRole.create(userRole)
+          .then((data) => {
+            user.roles = data.dataValues;
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
       }
     })
     .catch((err) => {
       res.status(500).send({ message: err.message });
     });
-
-  await UserRole.findAndCountAll({
-    where: { userId: user.id, status: "Active" },
-    include: {
-      model: Role,
-      attributes: [
-        ["role", "roleName"],
-        ["status", "roleStatus"],
-      ],
-    },
-  })
-    .then((data) => {
-      if (data) {
-        console.log(data);
-        user.roles = [];
-        for (let role of data.rows) {
-          console.log("++++++++++++", role.dataValues);
-          role.dataValues = {
-            ...role.dataValues,
-            ...role.dataValues.role.dataValues,
-          };
-          delete role.dataValues.role;
-          role.dataValues.role = role.dataValues.roleName;
-          delete role.dataValues.roleName;
-
-          user.roles.push(role.dataValues);
-        }
-      } else {
-        user.roles = [];
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error" + err,
-      });
-    });
-
-  // this lets us get the user id
-  if (user.id === undefined) {
-    console.log("need to get user's id");
-    console.log(user);
-    await User.create(user)
-      .then((data) => {
-        console.log("user was registered");
-        user = data.dataValues;
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err.message });
-      });
-  } else {
-    // doing this to ensure that the user's name is the one listed with Google
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.picture = picture;
-    console.log(user);
-    await User.update(user, { where: { id: user.id } })
-      .then((num) => {
-        if (num == 1) {
-          console.log("updated user's name");
-        } else {
-          console.log(
-            `Cannot update User with id=${user.id}. Maybe User was not found or req.body is empty!`
-          );
-        }
-      })
-      .catch((err) => {
-        console.log("Error updating User with id=" + user.id + " " + err);
-      });
-  }
-
-  // try to find session first
 
   await Session.findOne({
     where: {
@@ -175,11 +158,7 @@ exports.login = async (req, res) => {
             userId: user.id,
             token: session.token,
             role: user.roles,
-            // refresh_token: user.refresh_token,
-            // expiration_date: user.expiration_date
           };
-          console.log("found a session, don't need to make another one");
-          console.log(userInfo);
           res.send(userInfo);
         }
       }
@@ -205,9 +184,6 @@ exports.login = async (req, res) => {
       expirationDate: tempExpirationDate,
     };
 
-    console.log("making a new session");
-    console.log(session);
-
     await Session.create(session)
       .then(() => {
         let userInfo = {
@@ -221,7 +197,6 @@ exports.login = async (req, res) => {
           // refresh_token: user.refresh_token,
           // expiration_date: user.expiration_date
         };
-        console.log(userInfo);
         res.send(userInfo);
       })
       .catch((err) => {
