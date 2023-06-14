@@ -227,6 +227,92 @@ exports.getByUserId = (req, res) => {
     });
 };
 
+exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
+  console.log("***********************", req.params.date);
+  let date = req.params.date;
+  StudentInstrument.findAll({
+    where: { studentRoleId: { [Op.eq]: req.params.userRoleId } },
+    attributes: [["id", "studentInstrumentId"]],
+    include: [
+      {
+        model: db.studentInstrumentSignup,
+        required: true,
+        include: [
+          {
+            model: db.eventSignup,
+            required: true,
+            include: [
+              {
+                model: db.event,
+                required: true,
+                where: {
+                  date: { [Op.gte]: date },
+                },
+                include: [
+                  {
+                    model: db.location,
+                    required: true,
+                  },
+                ],
+              },
+              {
+                model: db.eventSignupPiece,
+                required: true,
+                include: [
+                  {
+                    model: db.piece,
+                    required: true,
+                    include: [
+                      {
+                        model: db.composer,
+                        required: true,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.userRole,
+            as: "instructorRoleSignup",
+            required: true,
+            attributes: [["id", "userRoleId"], "title", "roleId"],
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+            ],
+          },
+          {
+            model: db.userRole,
+            as: "accompanistRoleSignup",
+            required: false,
+            attributes: [["id", "userRoleId"], "title", "roleId"],
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving studentInstrumentSignups.",
+      });
+    });
+};
+
 exports.getStudentsForInstructorId = (req, res) => {
   db.user
     .findAll({
