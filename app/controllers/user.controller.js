@@ -178,3 +178,29 @@ exports.getAllWithRoles = (req, res) => {
       });
     });
 };
+
+exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
+  User.findAll({
+    include: {
+      model: db.userRole,
+      required: false,
+      include: {
+        model: db.studentInstrument,
+        as: "studentRole",
+        required: false,
+        include: {
+          model: db.instrument,
+          required: true,
+        },
+      },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving users.",
+      });
+    });
+};

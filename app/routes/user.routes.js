@@ -17,6 +17,12 @@ module.exports = (app) => {
   router.delete("/", [authenticate], user.deleteAll);
   // Get all users and attached roles
   router.get("/all/roles", [authenticate], user.getAllWithRoles);
+  // Get all users and attached roles
+  router.get(
+    "/all/roles/studentInstruments",
+    [authenticate],
+    user.getAllWithRolesAndStudentInstrumentData
+  );
 
   app.use("/performanceapi/user", router);
 };
