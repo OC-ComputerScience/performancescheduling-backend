@@ -15,6 +15,8 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], instrument.delete);
   // Delete all instruments
   router.delete("/", [authenticate], instrument.deleteAll);
+  // Retrieve all instruments by status
+  router.get("/status/:status", [authenticate], instrument.findAllByStatus);
 
   app.use("/performanceapi/instrument", router);
 };

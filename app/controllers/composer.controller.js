@@ -138,3 +138,19 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+// Retreive all composers that are pending
+exports.findAllByStatus = (req, res) => {
+  Composer.findAll({
+    where: { status: req.params.status },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving composers.",
+      });
+    });
+};

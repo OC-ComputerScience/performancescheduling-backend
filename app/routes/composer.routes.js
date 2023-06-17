@@ -15,6 +15,8 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], composer.delete);
   // Delete all composers
   router.delete("/", [authenticate], composer.deleteAll);
+  // Retrieve all composers by status
+  router.get("/status/:status", [authenticate], composer.findAllByStatus);
 
   app.use("/performanceapi/composer", router);
 };

@@ -145,3 +145,19 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+// Retreive all instruments that are pending
+exports.findAllByStatus = (req, res) => {
+  Instrument.findAll({
+    where: { status: req.params.status },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving instruments.",
+      });
+    });
+};

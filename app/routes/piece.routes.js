@@ -17,6 +17,8 @@ module.exports = (app) => {
   router.delete("/", [authenticate], piece.deleteAll);
   // Get by composer Id
   router.get("/composer/:composerId", [authenticate], piece.getByComposer);
+  // Retrieve all pieces by status
+  router.get("/status/:status", [authenticate], piece.findAllByStatus);
 
   app.use("/performanceapi/piece", router);
 };
