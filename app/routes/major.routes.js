@@ -15,6 +15,8 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], major.delete);
   // Delete all majors
   router.delete("/", [authenticate], major.deleteAll);
+  // Retrieve all majors by status
+  router.get("/status/:status", [authenticate], major.findAllByStatus);
 
   app.use("/performanceapi/major", router);
 };
