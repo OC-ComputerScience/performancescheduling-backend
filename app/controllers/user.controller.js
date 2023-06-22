@@ -234,6 +234,10 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
           model: db.role,
           required: true,
         },
+        {
+          model: db.major,
+          required: false,
+        },
       ],
     },
   })
