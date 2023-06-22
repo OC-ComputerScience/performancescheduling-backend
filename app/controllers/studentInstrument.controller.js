@@ -117,6 +117,66 @@ exports.update = (req, res) => {
     });
 };
 
+// Disable a(n) StudentInstrument by the id in the request
+exports.disable = (req, res) => {
+  const id = req.params.id;
+  StudentInstrument.update(
+    { status: "Disabled" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "StudentInstrument was disabled successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot disable StudentInstrument with id=" +
+            id +
+            ". Maybe the StudentInstrument was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error disabling StudentInstrument with id=" + id,
+      });
+    });
+};
+
+// Enable a(n) StudentInstrument by the id in the request
+exports.enable = (req, res) => {
+  const id = req.params.id;
+  StudentInstrument.update(
+    { status: "Active" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "StudentInstrument was enabled successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot enabled StudentInstrument with id=" +
+            id +
+            ". Maybe the StudentInstrument was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error enabling StudentInstrument with id=" + id,
+      });
+    });
+};
+
 // Delete a(n) studentInstrument with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
@@ -337,6 +397,58 @@ exports.getStudentsForInstructorId = (req, res) => {
         },
       },
     })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+exports.getStudentInstrumentsForStudentId = (req, res) => {
+  StudentInstrument.findAll({
+    where: { studentRoleId: req.params.studentId },
+    include: [
+      {
+        model: db.userRole,
+        as: "instructorRole",
+        required: true,
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+          {
+            model: db.availability,
+            required: false,
+          },
+        ],
+      },
+      {
+        model: db.userRole,
+        as: "accompanistRole",
+        required: false,
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+          {
+            model: db.availability,
+            required: false,
+          },
+        ],
+      },
+      {
+        model: db.instrument,
+        required: true,
+      },
+      {
+        model: db.level,
+        required: false,
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

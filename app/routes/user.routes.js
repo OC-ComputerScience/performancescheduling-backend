@@ -11,6 +11,10 @@ module.exports = (app) => {
   router.get("/:id", [authenticate], user.findById);
   // Update a user with id
   router.put("/:id", [authenticate], user.update);
+  // Disable a user with id
+  router.put("/disable/:id", [authenticate], user.disable);
+  // Enable a user with id
+  router.put("/enable/:id", [authenticate], user.enable);
   // Delete a user with id
   router.delete("/:id", [authenticate], user.delete);
   // Delete all users

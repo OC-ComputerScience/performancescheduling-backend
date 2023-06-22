@@ -11,6 +11,10 @@ module.exports = (app) => {
   router.get("/:id", [authenticate], studentInstrument.findById);
   // Update a studentInstrument with id
   router.put("/:id", [authenticate], studentInstrument.update);
+  // Disable a studentInstrument with id
+  router.put("/disable/:id", [authenticate], studentInstrument.disable);
+  // Enable a studentInstrument with id
+  router.put("/enable/:id", [authenticate], studentInstrument.enable);
   // Delete a studentInstrument with id
   router.delete("/:id", [authenticate], studentInstrument.delete);
   // Delete all studentInstruments
@@ -28,6 +32,12 @@ module.exports = (app) => {
     "/instructorId/:instructorId",
     [authenticate],
     studentInstrument.getStudentsForInstructorId
+  );
+  // Get students for student id
+  router.get(
+    "/studentId/:studentId",
+    [authenticate],
+    studentInstrument.getStudentInstrumentsForStudentId
   );
 
   app.use("/performanceapi/studentInstrument", router);
