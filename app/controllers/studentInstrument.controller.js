@@ -171,13 +171,19 @@ exports.getByUserId = (req, res) => {
         model: db.userRole,
         as: "studentRole",
         required: true,
-        include: {
-          model: db.user,
-          required: true,
-          where: {
-            id: { [Op.eq]: req.params.userId },
+        include: [
+          {
+            model: db.user,
+            required: true,
+            where: {
+              id: { [Op.eq]: req.params.userId },
+            },
           },
-        },
+          {
+            model: db.level,
+            required: true,
+          },
+        ],
       },
       {
         model: db.userRole,

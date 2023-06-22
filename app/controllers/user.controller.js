@@ -184,15 +184,57 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
     include: {
       model: db.userRole,
       required: false,
-      include: {
-        model: db.studentInstrument,
-        as: "studentRole",
-        required: false,
-        include: {
-          model: db.instrument,
+      include: [
+        {
+          model: db.studentInstrument,
+          as: "studentRole",
+          required: false,
+          include: [
+            {
+              model: db.userRole,
+              as: "instructorRole",
+              required: true,
+              include: [
+                {
+                  model: db.user,
+                  required: true,
+                },
+                {
+                  model: db.availability,
+                  required: false,
+                },
+              ],
+            },
+            {
+              model: db.userRole,
+              as: "accompanistRole",
+              required: false,
+              include: [
+                {
+                  model: db.user,
+                  required: true,
+                },
+                {
+                  model: db.availability,
+                  required: false,
+                },
+              ],
+            },
+            {
+              model: db.instrument,
+              required: true,
+            },
+            {
+              model: db.level,
+              required: false,
+            },
+          ],
+        },
+        {
+          model: db.role,
           required: true,
         },
-      },
+      ],
     },
   })
     .then((data) => {
