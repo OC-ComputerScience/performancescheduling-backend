@@ -5,11 +5,13 @@ const UserRole = db.userRole;
 // Create and Save a new userRole
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.majorId) {
-    res.status(400).send({
-      message: "majorId cannot be empty!",
-    });
-    return;
+  if (req.body.studentClassification != null) {
+    if (!req.body.majorId) {
+      res.status(400).send({
+        message: "majorId cannot be empty!",
+      });
+      return;
+    }
   } else if (!req.body.roleId) {
     res.status(400).send({
       message: "roleId cannot be empty!",
