@@ -239,10 +239,6 @@ exports.getByUserId = (req, res) => {
               id: { [Op.eq]: req.params.userId },
             },
           },
-          {
-            model: db.level,
-            required: true,
-          },
         ],
       },
       {
@@ -277,6 +273,10 @@ exports.getByUserId = (req, res) => {
       },
       {
         model: db.instrument,
+        required: true,
+      },
+      {
+        model: db.level,
         required: true,
       },
     ],
