@@ -43,7 +43,19 @@ exports.create = (req, res) => {
 
 // Retrieve all instruments from the database
 exports.findAll = (req, res) => {
-  Instrument.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([
+      sortVar,
+      req.query.order == undefined ? "ASC" : req.query.order,
+    ]);
+  }
+
+  Instrument.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })
