@@ -45,7 +45,19 @@ exports.create = (req, res) => {
 
 // Retrieve all eventSignups from the database
 exports.findAll = (req, res) => {
-  EventSignup.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([
+      sortVar,
+      req.query.order == undefined ? "ASC" : req.query.order,
+    ]);
+  }
+
+  EventSignup.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })

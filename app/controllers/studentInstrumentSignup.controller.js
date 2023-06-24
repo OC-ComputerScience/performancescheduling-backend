@@ -45,7 +45,19 @@ exports.create = (req, res) => {
 
 // Retrieve all studentInstrumentSignups from the database
 exports.findAll = (req, res) => {
-  StudentInstrumentSignup.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([
+      sortVar,
+      req.query.order == undefined ? "ASC" : req.query.order,
+    ]);
+  }
+
+  StudentInstrumentSignup.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })

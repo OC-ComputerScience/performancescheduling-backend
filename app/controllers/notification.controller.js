@@ -31,7 +31,19 @@ exports.create = (req, res) => {
 
 // Retrieve all notifications from the database
 exports.findAll = (req, res) => {
-  Notification.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([
+      sortVar,
+      req.query.order == undefined ? "ASC" : req.query.order,
+    ]);
+  }
+
+  Notification.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })
