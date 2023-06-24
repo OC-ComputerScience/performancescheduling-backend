@@ -164,3 +164,18 @@ exports.getByComposer = (req, res) => {
       });
     });
 };
+
+// Retreive all pieces that are pending
+exports.findAllByStatus = (req, res) => {
+  Piece.findAll({
+    where: { status: req.params.status },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving pieces.",
+      });
+    });
+};

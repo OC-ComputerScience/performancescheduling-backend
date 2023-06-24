@@ -107,26 +107,41 @@ exports.findById = (req, res) => {
 // Retrieve all events from the database from the specified date onwards
 exports.findDateAndAfter = (req, res) => {
   const date = req.params.date;
-  Event.findAll({
-    where: {
-      date: {
-        [Op.gte]: date,
-      },
+  const role = req.query.role;
+
+  const includeModels = [
+    {
+      model: db.location,
+      required: true,
     },
-    include: [
-      {
-        model: db.location,
-        required: true,
-      },
-      {
-        model: db.eventSignup,
-        required: true,
-      },
-      {
-        model: db.eventType,
-        required: true,
-      },
-    ],
+    {
+      model: db.eventType,
+      required: true,
+    },
+    {
+      model: db.eventSignup,
+      required: false,
+    },
+  ];
+
+  const whereObject = {
+    date: {
+      [Op.gte]: date,
+    },
+  };
+
+  if (role === "Student") {
+    whereObject.isReady = 1;
+  } else if (role === "Admin") {
+    includeModels.push({
+      model: db.availability,
+      required: false,
+    });
+  }
+
+  Event.findAll({
+    where: whereObject,
+    include: includeModels,
   })
     .then((data) => {
       if (data) {
@@ -143,6 +158,45 @@ exports.findDateAndAfter = (req, res) => {
       });
     });
 };
+
+// exports.findDateAndAfter = (req, res) => {
+//   const date = req.params.date;
+//   Event.findAll({
+//     where: {
+//       date: {
+//         [Op.gte]: date,
+//       },
+//     },
+//     include: [
+//       {
+//         model: db.location,
+//         required: true,
+//       },
+//       {
+//         model: db.eventSignup,
+//         required: true,
+//       },
+//       {
+//         model: db.eventType,
+//         required: true,
+//       },
+//     ],
+//   })
+//     .then((data) => {
+//       if (data) {
+//         res.send(data);
+//       } else {
+//         res.status(404).send({
+//           message: "Cannot find event on or after " + date,
+//         });
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error occurred while retrieving events.",
+//       });
+//     });
+// };
 
 // Update a(n) event by the id in the request
 exports.update = (req, res) => {

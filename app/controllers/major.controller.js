@@ -143,3 +143,18 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+// Retreive all majors that are pending
+exports.findAllByStatus = (req, res) => {
+  Major.findAll({
+    where: { status: req.params.status },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving majors.",
+      });
+    });
+};
