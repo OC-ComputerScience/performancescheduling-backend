@@ -118,6 +118,10 @@ exports.findDateAndAfter = (req, res) => {
       model: db.eventType,
       required: true,
     },
+    {
+      model: db.eventSignup,
+      required: false,
+    },
   ];
 
   const whereObject = {
@@ -127,11 +131,6 @@ exports.findDateAndAfter = (req, res) => {
   };
 
   if (role === "Student") {
-    includeModels.push({
-      model: db.eventSignup,
-      required: false,
-    });
-
     whereObject.isReady = 1;
   } else if (role === "Admin") {
     includeModels.push({
