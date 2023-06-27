@@ -76,7 +76,16 @@ exports.create = (req, res) => {
 
 // Retrieve all studentInstrumentEvaluations from the database
 exports.findAll = (req, res) => {
-  StudentInstrumentEvaluation.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  StudentInstrumentEvaluation.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })

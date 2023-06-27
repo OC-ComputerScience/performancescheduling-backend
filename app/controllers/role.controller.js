@@ -36,7 +36,16 @@ exports.create = (req, res) => {
 
 // Retrieve all roles from the database
 exports.findAll = (req, res) => {
-  Role.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  Role.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })

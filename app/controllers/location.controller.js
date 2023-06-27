@@ -44,7 +44,16 @@ exports.create = (req, res) => {
 
 // Retrieve all locations from the database
 exports.findAll = (req, res) => {
-  Location.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  Location.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })

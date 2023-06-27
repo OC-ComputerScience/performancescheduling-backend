@@ -46,7 +46,16 @@ exports.create = (req, res) => {
 
 // Retrieve all pieces from the database
 exports.findAll = (req, res) => {
-  Piece.findAll()
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  Piece.findAll({
+    order: order,
+  })
     .then((data) => {
       res.send(data);
     })
