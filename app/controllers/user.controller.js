@@ -249,7 +249,15 @@ exports.getAllWithRoles = (req, res) => {
 };
 
 exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
   User.findAll({
+    order: order,
     include: {
       model: db.userRole,
       required: false,
