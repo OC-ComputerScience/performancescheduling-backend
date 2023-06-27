@@ -42,10 +42,7 @@ exports.findAll = (req, res) => {
   var order = [];
 
   if (sortVar != undefined) {
-    order.push([
-      sortVar,
-      req.query.order == undefined ? "ASC" : req.query.order,
-    ]);
+    order.push([sortVar, req.query.order]);
   }
 
   EventSignupPiece.findAll({
