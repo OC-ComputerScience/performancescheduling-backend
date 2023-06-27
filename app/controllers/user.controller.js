@@ -128,6 +128,66 @@ exports.update = (req, res) => {
     });
 };
 
+// Disable a(n) user by the id in the request
+exports.disable = (req, res) => {
+  const id = req.params.id;
+  User.update(
+    { status: "Disabled" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "User was disabled successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot disable user with id=" +
+            id +
+            ". Maybe the user was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error disabling user with id=" + id,
+      });
+    });
+};
+
+// Enable a(n) user by the id in the request
+exports.enable = (req, res) => {
+  const id = req.params.id;
+  User.update(
+    { status: "Active" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "User was enabled successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot enabled user with id=" +
+            id +
+            ". Maybe the user was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error enabling user with id=" + id,
+      });
+    });
+};
+
 // Delete a(n) user with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
@@ -176,6 +236,86 @@ exports.getAllWithRoles = (req, res) => {
     include: {
       model: db.userRole,
       required: false,
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving users.",
+      });
+    });
+};
+
+exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  User.findAll({
+    order: order,
+    include: {
+      model: db.userRole,
+      required: false,
+      include: [
+        {
+          model: db.studentInstrument,
+          as: "studentRole",
+          required: false,
+          include: [
+            {
+              model: db.userRole,
+              as: "instructorRole",
+              required: true,
+              include: [
+                {
+                  model: db.user,
+                  required: true,
+                },
+                {
+                  model: db.availability,
+                  required: false,
+                },
+              ],
+            },
+            {
+              model: db.userRole,
+              as: "accompanistRole",
+              required: false,
+              include: [
+                {
+                  model: db.user,
+                  required: true,
+                },
+                {
+                  model: db.availability,
+                  required: false,
+                },
+              ],
+            },
+            {
+              model: db.instrument,
+              required: true,
+            },
+            {
+              model: db.level,
+              required: false,
+            },
+          ],
+        },
+        {
+          model: db.role,
+          required: true,
+        },
+        {
+          model: db.major,
+          required: false,
+        },
+      ],
     },
   })
     .then((data) => {

@@ -5,11 +5,13 @@ const UserRole = db.userRole;
 // Create and Save a new userRole
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.majorId) {
-    res.status(400).send({
-      message: "majorId cannot be empty!",
-    });
-    return;
+  if (req.body.studentClassification != null) {
+    if (!req.body.majorId) {
+      res.status(400).send({
+        message: "majorId cannot be empty!",
+      });
+      return;
+    }
   } else if (!req.body.roleId) {
     res.status(400).send({
       message: "roleId cannot be empty!",
@@ -122,6 +124,66 @@ exports.update = (req, res) => {
     });
 };
 
+// Update a(n) userRole by the id in the request
+exports.disable = (req, res) => {
+  const id = req.params.id;
+  UserRole.update(
+    { status: "Disabled" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "UserRole was updated successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot update userRole with id=" +
+            id +
+            ". Maybe the userRole was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating userRole with id=" + id,
+      });
+    });
+};
+
+// Update a(n) userRole by the id in the request
+exports.enable = (req, res) => {
+  const id = req.params.id;
+  UserRole.update(
+    { status: "Active" },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "UserRole was updated successfully.",
+        });
+      } else {
+        res.send({
+          message:
+            "Cannot update userRole with id=" +
+            id +
+            ". Maybe the userRole was not found or req.body is empty!",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating userRole with id=" + id,
+      });
+    });
+};
+
 // Delete a(n) userRole with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
@@ -172,6 +234,33 @@ exports.getRolesForUser = (req, res) => {
       userId: { [Op.eq]: req.params.userId },
       status: { [Op.eq]: "Active" },
     },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userRoles.",
+      });
+    });
+};
+
+exports.getAllRolesForRoleId = (req, res) => {
+  UserRole.findAll({
+    where: {
+      roleId: { [Op.eq]: req.params.roleId },
+    },
+    include: [
+      {
+        model: db.user,
+        required: true,
+      },
+      {
+        model: db.availability,
+        required: false,
+      },
+    ],
   })
     .then((data) => {
       res.send(data);
