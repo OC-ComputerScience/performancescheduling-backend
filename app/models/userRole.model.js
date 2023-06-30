@@ -9,9 +9,6 @@ module.exports = (sequelize, Sequelize) => {
     studentClassification: {
       type: Sequelize.STRING,
     },
-    studentLessonHours: {
-      type: Sequelize.INTEGER,
-    },
     studentSemesters: {
       type: Sequelize.INTEGER,
     },

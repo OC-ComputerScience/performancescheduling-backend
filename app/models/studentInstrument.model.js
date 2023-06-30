@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       unique: true,
     },
+    privateHours: {
+      type: Sequelize.INTEGER,
+    },
     status: {
       type: Sequelize.STRING,
       allowNull: false,

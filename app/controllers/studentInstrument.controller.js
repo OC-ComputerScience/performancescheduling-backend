@@ -33,6 +33,7 @@ exports.create = (req, res) => {
   }
 
   const studentInstrument = {
+    privateHours: req.body.privateHours,
     levelId: req.body.levelId,
     studentRoleId: req.body.studentRoleId,
     instructorRoleId: req.body.instructorRoleId,
