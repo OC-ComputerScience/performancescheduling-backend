@@ -82,6 +82,16 @@ exports.findAll = (req, res) => {
 
   Event.findAll({
     order: order,
+    include: [
+      {
+        model: db.location,
+        required: true,
+      },
+      {
+        model: db.semester,
+        required: true,
+      },
+    ],
   })
     .then((data) => {
       res.send(data);
