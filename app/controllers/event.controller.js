@@ -91,6 +91,10 @@ exports.findAll = (req, res) => {
         model: db.semester,
         required: true,
       },
+      {
+        model: db.eventType,
+        required: true,
+      },
     ],
   })
     .then((data) => {
