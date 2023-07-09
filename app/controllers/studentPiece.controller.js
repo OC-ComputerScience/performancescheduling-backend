@@ -159,25 +159,35 @@ exports.deleteAll = (req, res) => {
 
 exports.getStudentRepertoire = async (req, res) => {
   await StudentPiece.findAll({
-    include: {
-      model: db.studentInstrument,
-      required: true,
-      include: [
-        {
-          model: db.userRole,
-          as: "studentRole",
-          required: true,
-          include: {
-            model: db.user,
+    include: [
+      {
+        model: db.studentInstrument,
+        required: true,
+        include: [
+          {
+            model: db.userRole,
+            as: "studentRole",
             required: true,
-            where: {
-              id: { [Op.eq]: req.params.userId },
+            include: {
+              model: db.user,
+              required: true,
+              where: {
+                id: { [Op.eq]: req.params.userId },
+              },
             },
           },
+          { model: db.instrument, required: true },
+        ],
+      },
+      {
+        model: db.piece,
+        required: true,
+        include: {
+          model: db.composer,
+          required: true,
         },
-        { model: db.instrument, required: true },
-      ],
-    },
+      },
+    ],
   })
     .then((data) => {
       res.send(data);
