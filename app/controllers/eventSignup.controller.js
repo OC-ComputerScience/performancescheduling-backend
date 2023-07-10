@@ -93,6 +93,23 @@ exports.findByEventId = (req, res) => {
     where: {
       eventId: id,
     },
+    include: {
+      model: db.studentInstrumentSignup,
+      required: false,
+      include: {
+        model: db.studentInstrument,
+        required: true,
+        include: {
+          model: db.userRole,
+          as: "studentRole",
+          required: true,
+          include: {
+            model: db.user,
+            required: true,
+          },
+        },
+      },
+    },
   })
     .then((data) => {
       if (data) {
