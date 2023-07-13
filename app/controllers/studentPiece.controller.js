@@ -179,7 +179,6 @@ exports.getStudentRepertoire = async (req, res) => {
 
           include: [
             { model: db.instrument, required: true },
-            { model: db.instrument, required: true },
             {
               model: db.userRole,
               as: "studentRole",
