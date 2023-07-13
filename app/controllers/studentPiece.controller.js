@@ -166,7 +166,6 @@ exports.getStudentRepertoire = async (req, res) => {
         required: true,
         include: { model: db.composer, required: true },
       },
-
       {
         model: db.studentInstrument,
         required: true,
