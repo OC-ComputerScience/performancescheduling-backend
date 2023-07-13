@@ -172,6 +172,12 @@ exports.getStudentRepertoire = async (req, res) => {
         required: true,
         include: { model: db.composer, required: true },
       },
+      { model: db.semester, required: true },
+      {
+        model: db.piece,
+        required: true,
+        include: { model: db.composer, required: true },
+      },
       [
         {
           model: db.studentInstrument,
