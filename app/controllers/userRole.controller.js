@@ -189,17 +189,12 @@ exports.getAllRolesForRoleId = (req, res) => {
   UserRole.findAll({
     where: {
       roleId: { [Op.eq]: req.params.roleId },
+      status: { [Op.eq]: "Active" },
     },
-    include: [
-      {
-        model: db.user,
-        required: true,
-      },
-      {
-        model: db.availability,
-        required: false,
-      },
-    ],
+    include: {
+      model: db.user,
+      required: true,
+    },
   })
     .then((data) => {
       res.send(data);
