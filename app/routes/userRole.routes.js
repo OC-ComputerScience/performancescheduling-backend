@@ -11,10 +11,6 @@ module.exports = (app) => {
   router.get("/:id", [authenticate], userRole.findById);
   // Update a userRole with id
   router.put("/:id", [authenticate], userRole.update);
-  // Disable a userRole with id
-  router.put("/disable/:id", [authenticate], userRole.disable);
-  // Enable a userRole with id
-  router.put("/enable/:id", [authenticate], userRole.enable);
   // Delete a userRole with id
   router.delete("/:id", [authenticate], userRole.delete);
   // Delete all userRoles

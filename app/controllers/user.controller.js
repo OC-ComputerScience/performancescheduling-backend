@@ -128,66 +128,6 @@ exports.update = (req, res) => {
     });
 };
 
-// Disable a(n) user by the id in the request
-exports.disable = (req, res) => {
-  const id = req.params.id;
-  User.update(
-    { status: "Disabled" },
-    {
-      where: { id: id },
-    }
-  )
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was disabled successfully.",
-        });
-      } else {
-        res.send({
-          message:
-            "Cannot disable user with id=" +
-            id +
-            ". Maybe the user was not found or req.body is empty!",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error disabling user with id=" + id,
-      });
-    });
-};
-
-// Enable a(n) user by the id in the request
-exports.enable = (req, res) => {
-  const id = req.params.id;
-  User.update(
-    { status: "Active" },
-    {
-      where: { id: id },
-    }
-  )
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was enabled successfully.",
-        });
-      } else {
-        res.send({
-          message:
-            "Cannot enabled user with id=" +
-            id +
-            ". Maybe the user was not found or req.body is empty!",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error enabling user with id=" + id,
-      });
-    });
-};
-
 // Delete a(n) user with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
