@@ -187,6 +187,10 @@ exports.getStudentRepertoire = async (req, res) => {
         ],
       },
     ],
+    order: [
+      [db.semester, "name", "asc"],
+      [db.studentInstrument, db.instrument, "name", "asc"],
+    ],
   })
     .then((data) => {
       res.send(data);
