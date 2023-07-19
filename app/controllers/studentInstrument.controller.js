@@ -415,6 +415,32 @@ exports.getStudentsForInstructorId = (req, res) => {
     });
 };
 
+exports.getStudentsForAccompanistId = (req, res) => {
+  db.user
+    .findAll({
+      include: {
+        model: db.userRole,
+        required: true,
+        include: {
+          model: StudentInstrument,
+          required: true,
+          as: "studentRole",
+          where: { accompanistRoleId: req.params.accompanistId },
+          include: {
+            model: db.instrument,
+            required: true,
+          },
+        },
+      },
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
 exports.getStudentInstrumentsForStudentId = (req, res) => {
   StudentInstrument.findAll({
     where: { studentRoleId: req.params.studentId },
