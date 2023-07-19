@@ -166,7 +166,17 @@ exports.getByUserRole = (req, res) => {
   Availability.findAll({
     where: {
       userRoleId: { [Op.eq]: req.params.userRoleId },
-    },
+    },         
+    include: {
+      model: db.event,
+      required: true,
+      as: "event",
+      include: {
+        model: db.location,
+        required: true,
+        as: "location",
+      }
+    }
   })
     .then((data) => {
       res.send(data);
