@@ -255,6 +255,11 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
         required: true,
         include: [
           {
+            model: db.studentInstrument,
+            required: true,
+            include: [{ model: db.instrument, required: true }],
+          },
+          {
             model: db.eventSignup,
             required: true,
             include: [
@@ -269,6 +274,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                     model: db.location,
                     required: true,
                   },
+                  { model: db.semester, required: true },
                 ],
               },
               {
