@@ -55,6 +55,12 @@ exports.findAll = (req, res) => {
 
   Piece.findAll({
     order: order,
+    include: [
+      {
+        model: db.composer,
+        required: false,
+      },
+    ],
   })
     .then((data) => {
       res.send(data);

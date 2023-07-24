@@ -20,6 +20,14 @@ exports.create = (req, res) => {
       message: "eventId cannot be empty!",
     });
     return;
+  } else if (
+    req.body.isGroupEvent == null ||
+    req.body.isGroupEvent == undefined
+  ) {
+    res.status(400).send({
+      message: "isGroupEvent cannot be empty!",
+    });
+    return;
   }
 
   const eventSignup = {
@@ -28,6 +36,7 @@ exports.create = (req, res) => {
     recordingLink: req.body.recordingLink,
     pass: req.body.pass,
     eventId: req.body.eventId,
+    isGroupEvent: req.body.isGroupEvent,
   };
 
   // Create and Save a new eventSignup
@@ -92,6 +101,23 @@ exports.findByEventId = (req, res) => {
   EventSignup.findAll({
     where: {
       eventId: id,
+    },
+    include: {
+      model: db.studentInstrumentSignup,
+      required: false,
+      include: {
+        model: db.studentInstrument,
+        required: true,
+        include: {
+          model: db.userRole,
+          as: "studentRole",
+          required: true,
+          include: {
+            model: db.user,
+            required: true,
+          },
+        },
+      },
     },
   })
     .then((data) => {

@@ -20,6 +20,10 @@ module.exports = (sequelize, Sequelize) => {
     pass: {
       type: Sequelize.BOOLEAN,
     },
+    isGroupEvent: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return EventSignup;
