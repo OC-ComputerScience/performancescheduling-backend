@@ -10,9 +10,9 @@ exports.create = (req, res) => {
       message: "userRoleId cannot be empty!",
     });
     return;
-  } else if (!req.body.eventSignupId) {
+  } else if (!req.body.eventSignupPieceId) {
     res.status(400).send({
-      message: "eventSignupId cannot be empty!",
+      message: "eventSignupPieceId cannot be empty!",
     });
     return;
   } else if (!req.body.overallComment) {
@@ -24,7 +24,7 @@ exports.create = (req, res) => {
 
   const critique = {
     userRoleId: req.body.userRoleId,
-    eventSignupId: req.body.eventSignupId,
+    eventSignupPieceId: req.body.eventSignupPieceId,
     accuracyComment: req.body.accuracyComment,
     accuracyGrade: req.body.accuracyGrade,
     balanceComment: req.body.balanceComment,
