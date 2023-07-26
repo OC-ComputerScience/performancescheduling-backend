@@ -77,14 +77,14 @@ db.availability.belongsTo(db.event, {
 db.userRole.hasMany(db.critique, {
   foreignKey: { allowNull: false },
 });
-db.eventSignup.hasMany(db.critique, {
+db.eventSignupPiece.hasMany(db.critique, {
   foreignKey: { allowNull: false },
 });
 
 db.critique.belongsTo(db.userRole, {
   foreignKey: { allowNull: false },
 });
-db.critique.belongsTo(db.eventSignup, {
+db.critique.belongsTo(db.eventSignupPiece, {
   foreignKey: { allowNull: false },
 });
 
