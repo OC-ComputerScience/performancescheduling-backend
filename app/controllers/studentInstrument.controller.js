@@ -272,6 +272,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                 model: db.event,
                 required: true,
                 where: dateRule,
+                where: dateRule,
                 include: [
                   {
                     model: db.location,
@@ -304,6 +305,17 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                         include: [{ model: db.user, required: true }],
                       },
                     ],
+                  },
+                ],
+              },
+              {
+                model: db.critique,
+                required: false,
+                include: [
+                  {
+                    model: db.userRole,
+                    required: true,
+                    include: [{ model: db.user, required: true }],
                   },
                 ],
               },
