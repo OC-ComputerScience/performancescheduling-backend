@@ -244,8 +244,13 @@ exports.getByUserId = (req, res) => {
 };
 
 exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
-  console.log("***********************", req.params.date);
-  let date = req.params.date;
+  console.log("***********************", req.query.date);
+  let date = req.query.date;
+  let dateRule =
+    req.query.select == "GTE"
+      ? { date: { [Op.gte]: date } }
+      : { date: { [Op.lte]: date } };
+
   StudentInstrument.findAll({
     where: { studentRoleId: { [Op.eq]: req.params.userRoleId } },
     attributes: [["id", "studentInstrumentId"]],
@@ -266,9 +271,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
               {
                 model: db.event,
                 required: true,
-                where: {
-                  date: { [Op.gte]: date },
-                },
+                where: dateRule,
                 include: [
                   {
                     model: db.location,
@@ -290,6 +293,17 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                         required: true,
                       },
                     ],
+                  },
+                ],
+              },
+              {
+                model: db.critique,
+                required: false,
+                include: [
+                  {
+                    model: db.userRole,
+                    required: true,
+                    include: [{ model: db.user, required: true }],
                   },
                 ],
               },
@@ -321,6 +335,9 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
           },
         ],
       },
+    ],
+    order: [
+      [db.studentInstrumentSignup, db.eventSignup, db.event, "date", "asc"],
     ],
   })
     .then((data) => {
