@@ -334,49 +334,71 @@ exports.getStudentInstrumentSignupsForEventId = (req, res) => {
         {
           model: db.studentInstrumentSignup,
           required: true,
-          include: {
-            model: db.studentInstrument,
-            required: true,
-            include: [
-              {
+          include: [
+            {
+              model: db.studentInstrument,
+              required: true,
+              include: [
+                {
+                  model: db.userRole,
+                  required: true,
+                  as: "studentRole",
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+                {
+                  model: db.instrument,
+                  required: true,
+                },
+              ],
+            },
+            {
+              model: db.userRole,
+              required: true,
+              as: "instructorRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+            {
+              model: db.userRole,
+              required: false,
+              as: "accompanistRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          ],
+        },
+        {
+          model: db.eventSignupPiece,
+          required: true,
+          include: [
+            {
+              model: db.piece,
+              required: true,
+              include: {
+                model: db.composer,
+                required: true,
+              },
+            },
+            {
+              model: db.critique,
+              required: false,
+              include: {
                 model: db.userRole,
                 required: true,
-                as: "studentRole",
                 include: {
                   model: db.user,
                   required: true,
                 },
               },
-              {
-                model: db.instrument,
-                required: true,
-              },
-            ],
-          },
-        },
-        {
-          model: db.eventSignupPiece,
-          required: true,
-          include: {
-            model: db.piece,
-            required: true,
-            include: {
-              model: db.composer,
-              required: true,
             },
-          },
-        },
-        {
-          model: db.critique,
-          required: false,
-          include: {
-            model: db.userRole,
-            required: true,
-            include: {
-              model: db.user,
-              required: true,
-            },
-          },
+          ],
         },
       ],
     },
