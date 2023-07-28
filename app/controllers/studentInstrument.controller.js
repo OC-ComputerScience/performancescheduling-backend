@@ -246,6 +246,7 @@ exports.getByUserId = (req, res) => {
 exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
   console.log("***********************", req.query.date);
   let date = req.query.date;
+  let order = req.query.order;
   let dateRule =
     req.query.select == "GTE"
       ? { date: { [Op.gte]: date } }
@@ -337,7 +338,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
       },
     ],
     order: [
-      [db.studentInstrumentSignup, db.eventSignup, db.event, "date", "asc"],
+      [db.studentInstrumentSignup, db.eventSignup, db.event, "date", order],
     ],
   })
     .then((data) => {
