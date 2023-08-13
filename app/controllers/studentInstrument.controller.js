@@ -244,7 +244,6 @@ exports.getByUserId = (req, res) => {
 };
 
 exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
-  console.log("***********************", req.query.date);
   let date = req.query.date;
   let order = req.query.order;
   let dateRule =
