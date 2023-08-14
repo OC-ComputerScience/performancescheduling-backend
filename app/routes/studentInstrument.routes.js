@@ -19,7 +19,7 @@ module.exports = (app) => {
   router.get("/userId/:userId", [authenticate], studentInstrument.getByUserId);
   // Get by StudentInstrumentSIgnups by userId
   router.get(
-    "/instrumentSignups/:userRoleId/:date",
+    "/instrumentSignups/:userRoleId/",
     [authenticate],
     studentInstrument.getStudentInstrumentSignupsByUserRoleId
   );

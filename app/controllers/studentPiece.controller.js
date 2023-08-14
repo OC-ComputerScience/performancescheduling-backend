@@ -166,55 +166,30 @@ exports.getStudentRepertoire = async (req, res) => {
         required: true,
         include: { model: db.composer, required: true },
       },
-      { model: db.semester, required: true },
-      {
-        model: db.piece,
-        required: true,
-        include: { model: db.composer, required: true },
-      },
-      { model: db.semester, required: true },
-      {
-        model: db.piece,
-        required: true,
-        include: { model: db.composer, required: true },
-      },
-      [
-        {
-          model: db.studentInstrument,
-          required: true,
 
-          include: [
-            { model: db.instrument, required: true },
-            {
-              model: db.userRole,
-              as: "studentRole",
+      {
+        model: db.studentInstrument,
+        required: true,
+
+        include: [
+          { model: db.instrument, required: true },
+          {
+            model: db.userRole,
+            as: "studentRole",
+            required: true,
+            include: {
+              model: db.user,
               required: true,
-              include: {
-                model: db.user,
-                required: true,
-                where: {
-                  id: { [Op.eq]: req.params.userId },
-                },
+              where: {
+                id: { [Op.eq]: req.params.userId },
               },
             },
-          ],
-        },
-      ],
-      (order: [
-        [db.semester, "name", "desc"],
-        [db.studentInstrument, db.instrument, "name", "asc"]
-      ]),
-      {
-        model: db.piece,
-        required: true,
-        include: {
-          model: db.composer,
-          required: true,
-        },
+          },
+        ],
       },
     ],
     order: [
-      [db.semester, "name", "asc"],
+      [db.semester, "name", "desc"],
       [db.studentInstrument, db.instrument, "name", "asc"],
     ],
   })
