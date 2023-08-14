@@ -170,9 +170,10 @@ exports.getStudentRepertoire = async (req, res) => {
       {
         model: db.studentInstrument,
         required: true,
+        model: db.studentInstrument,
+        required: true,
 
         include: [
-          { model: db.instrument, required: true },
           { model: db.instrument, required: true },
           {
             model: db.userRole,
@@ -190,6 +191,7 @@ exports.getStudentRepertoire = async (req, res) => {
       },
     ],
     order: [
+      [db.semester, "name", "desc"],
       [db.semester, "name", "desc"],
       [db.studentInstrument, db.instrument, "name", "asc"],
     ],
