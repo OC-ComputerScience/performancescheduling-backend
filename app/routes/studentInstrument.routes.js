@@ -19,7 +19,7 @@ module.exports = (app) => {
   router.get("/userId/:userId", [authenticate], studentInstrument.getByUserId);
   // Get by StudentInstrumentSIgnups by userId
   router.get(
-    "/instrumentSignups/:userRoleId",
+    "/instrumentSignups/:userRoleId/",
     [authenticate],
     studentInstrument.getStudentInstrumentSignupsByUserRoleId
   );
@@ -29,12 +29,13 @@ module.exports = (app) => {
     [authenticate],
     studentInstrument.getStudentsForInstructorId
   );
-    // Get students for accompanist id
-    router.get(
-      "/accompanistId/:accompanistId",
-      [authenticate],
-      studentInstrument.getStudentsForAccompanistId
-    );
+  // Get students for accompanist id
+  router.get(
+    "/accompanistId/:accompanistId",
+    [authenticate],
+    studentInstrument.getStudentsForAccompanistId
+  );
+
   // Get instruments for student id
   router.get(
     "/studentId/:studentId",
