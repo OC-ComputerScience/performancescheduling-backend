@@ -104,7 +104,7 @@ exports.findByEventId = (req, res) => {
     },
     include: {
       model: db.studentInstrumentSignup,
-      required: false,
+      required: true,
       include: {
         model: db.studentInstrument,
         required: true,
