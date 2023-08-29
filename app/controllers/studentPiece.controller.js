@@ -160,6 +160,7 @@ exports.deleteAll = (req, res) => {
 exports.getStudentRepertoire = async (req, res) => {
   await StudentPiece.findAll({
     include: [
+
       { model: db.semester, required: true },
       {
         model: db.piece,
@@ -175,6 +176,7 @@ exports.getStudentRepertoire = async (req, res) => {
 
         include: [
           { model: db.instrument, required: true },
+
           {
             model: db.userRole,
             as: "studentRole",
@@ -194,6 +196,7 @@ exports.getStudentRepertoire = async (req, res) => {
       [db.semester, "name", "desc"],
       [db.semester, "name", "desc"],
       [db.studentInstrument, db.instrument, "name", "asc"],
+
     ],
   })
     .then((data) => {
