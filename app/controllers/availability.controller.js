@@ -163,10 +163,25 @@ exports.deleteAll = (req, res) => {
 
 // Get all availability by a userRoleId
 exports.getByUserRole = (req, res) => {
+  const currentDate = new Date();
+
   Availability.findAll({
     where: {
-      userRoleId: { [Op.eq]: req.params.userRoleId },
-    },
+      userRoleId: { [Op.eq]: req.params.userRoleId }
+    },         
+    include: {
+      model: db.event,
+      required: true,
+      as: "event",
+      where:{
+        date: { [Op.gte]: currentDate }
+      },
+      include: {
+        model: db.location,
+        required: true,
+        as: "location",
+      }
+    }
   })
     .then((data) => {
       res.send(data);
