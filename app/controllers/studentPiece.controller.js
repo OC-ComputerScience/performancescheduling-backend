@@ -160,18 +160,21 @@ exports.deleteAll = (req, res) => {
 exports.getStudentRepertoire = async (req, res) => {
   await StudentPiece.findAll({
     include: [
+
       { model: db.semester, required: true },
       {
         model: db.piece,
         required: true,
         include: { model: db.composer, required: true },
       },
+
       {
         model: db.studentInstrument,
         required: true,
 
         include: [
           { model: db.instrument, required: true },
+
           {
             model: db.userRole,
             as: "studentRole",

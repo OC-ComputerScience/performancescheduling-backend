@@ -29,12 +29,14 @@ module.exports = (app) => {
     [authenticate],
     studentInstrument.getStudentsForInstructorId
   );
+
   // Get students for accompanist id
   router.get(
     "/accompanistId/:accompanistId",
     [authenticate],
     studentInstrument.getStudentsForAccompanistId
   );
+
 
   // Get instruments for student id
   router.get(
