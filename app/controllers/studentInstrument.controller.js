@@ -358,17 +358,64 @@ exports.getStudentsForInstructorId = (req, res) => {
       include: {
         model: db.userRole,
         required: true,
-        include: {
+        include: [{
           model: StudentInstrument,
           required: true,
           as: "studentRole",
           where: { instructorRoleId: req.params.instructorId },
-          include: {
+          include: [{
             model: db.instrument,
             required: true,
           },
+          {
+            model: db.userRole,
+            as: "instructorRole",
+            required: true,
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+              {
+                model: db.availability,
+                required: false,
+              },
+            ],
+          },
+          {
+            model: db.userRole,
+            as: "accompanistRole",
+            required: false,
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+              {
+                model: db.availability,
+                required: false,
+              },
+            ],
+          },
+          {
+            model: db.instrument,
+            required: true,
+          },
+          {
+            model: db.level,
+            required: false,
+          },
+        ]
         },
-      },
+        {
+          model: db.role,
+          required: true,
+        },
+        {
+          model: db.major,
+          required: false,
+        }]
+      }
     })
     .then((data) => {
       res.send(data);
