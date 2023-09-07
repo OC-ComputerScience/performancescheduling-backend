@@ -23,18 +23,34 @@ module.exports = (app) => {
     [authenticate],
     studentInstrument.getStudentInstrumentSignupsByUserRoleId
   );
+  // Get by StudentInstrumentSIgnups by faculty
+  router.get(
+    "/instrumentSignups/faculty/:facultyRoleId/",
+    [authenticate],
+    studentInstrument.getStudentInstrumentSignupsByFacultyRoleId
+  ); // Get by StudentInstrumentSIgnups by userId
+  router.get(
+    "/instrumentSignups/:userRoleId/",
+    [authenticate],
+    studentInstrument.getStudentInstrumentSignupsByUserRoleId
+  ); // Get by StudentInstrumentSIgnups by userId
+  router.get(
+    "/instrumentSignups/:userRoleId/",
+    [authenticate],
+    studentInstrument.getStudentInstrumentSignupsByUserRoleId
+  );
   // Get students for instructor id
   router.get(
     "/instructorId/:instructorId",
     [authenticate],
     studentInstrument.getStudentsForInstructorId
   );
-    // Get students for accompanist id
-    router.get(
-      "/accompanistId/:accompanistId",
-      [authenticate],
-      studentInstrument.getStudentsForAccompanistId
-    );
+  // Get students for accompanist id
+  router.get(
+    "/accompanistId/:accompanistId",
+    [authenticate],
+    studentInstrument.getStudentsForAccompanistId
+  );
   // Get instruments for student id
   router.get(
     "/studentId/:studentId",
