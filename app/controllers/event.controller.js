@@ -145,6 +145,10 @@ exports.findDateAndAfter = (req, res) => {
       model: db.eventSignup,
       required: false,
     },
+    {
+      model: db.semester,
+      required: false,
+    },
   ];
 
   const whereObject = {
