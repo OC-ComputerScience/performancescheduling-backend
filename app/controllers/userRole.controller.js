@@ -186,7 +186,17 @@ exports.getRolesForUser = (req, res) => {
 };
 
 exports.getAllRolesForRoleId = (req, res) => {
+  const sortVar = req.query.sortVar;
+  const order = [];
+
+  if (sortVar != undefined) {
+    sortVar.split(',').forEach(function (item) {
+      order.push([db.user, item, req.query.order]);
+    });
+  }
+
   UserRole.findAll({
+    order: order,
     where: {
       roleId: { [Op.eq]: req.params.roleId },
       status: { [Op.eq]: "Active" },
