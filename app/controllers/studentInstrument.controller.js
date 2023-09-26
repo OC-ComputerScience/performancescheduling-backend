@@ -5,12 +5,7 @@ const StudentInstrument = db.studentInstrument;
 // Create and Save a new studentInstrument
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.levelId) {
-    res.status(400).send({
-      message: "levelId cannot be empty!",
-    });
-    return;
-  } else if (!req.body.studentRoleId) {
+  if (!req.body.studentRoleId) {
     res.status(400).send({
       message: "studentRoleId cannot be empty!",
     });
@@ -386,6 +381,49 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
             model: db.eventSignup,
             required: true,
             include: [
+              {
+                model: db.studentInstrumentSignup,
+                required: true,
+                include: [
+                  {
+                    model: db.studentInstrument,
+                    required: true,
+                    include: [
+                      {
+                        model: db.userRole,
+                        required: true,
+                        as: "studentRole",
+                        include: {
+                          model: db.user,
+                          required: true,
+                        },
+                      },
+                      {
+                        model: db.instrument,
+                        required: true,
+                      },
+                    ],
+                  },
+                  {
+                    model: db.userRole,
+                    required: true,
+                    as: "instructorRoleSignup",
+                    include: {
+                      model: db.user,
+                      required: true,
+                    },
+                  },
+                  {
+                    model: db.userRole,
+                    required: false,
+                    as: "accompanistRoleSignup",
+                    include: {
+                      model: db.user,
+                      required: true,
+                    },
+                  },
+                ],
+              },
               {
                 model: db.event,
                 required: true,
