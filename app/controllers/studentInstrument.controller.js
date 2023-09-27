@@ -222,7 +222,7 @@ exports.getByUserId = (req, res) => {
       },
       {
         model: db.level,
-        required: true,
+        required: false,
       },
     ],
   })
