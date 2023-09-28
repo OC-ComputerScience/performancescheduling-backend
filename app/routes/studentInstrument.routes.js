@@ -33,11 +33,6 @@ module.exports = (app) => {
     "/instrumentSignups/:userRoleId/",
     [authenticate],
     studentInstrument.getStudentInstrumentSignupsByUserRoleId
-  ); // Get by StudentInstrumentSIgnups by userId
-  router.get(
-    "/instrumentSignups/:userRoleId/",
-    [authenticate],
-    studentInstrument.getStudentInstrumentSignupsByUserRoleId
   );
   // Get students for instructor id
   router.get(
