@@ -105,9 +105,17 @@ exports.login = async (req, res) => {
           userRole.roleId = 2;
         }
 
-        await UserRole.create(userRole)
+        await UserRole.create(userRole).catch((err) => {
+          console.log(err.message);
+        });
+        await UserRole.findAll({
+          where: { userId: user.id, status: "Active" },
+          include: {
+            model: Role,
+          },
+        })
           .then((data) => {
-            user.roles = data.dataValues;
+            user.roles = data;
           })
           .catch((err) => {
             console.log(err.message);
