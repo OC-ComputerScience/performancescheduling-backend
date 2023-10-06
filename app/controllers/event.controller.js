@@ -144,6 +144,12 @@ exports.findDateAndAfter = (req, res) => {
     {
       model: db.eventSignup,
       required: false,
+      include: [
+        {
+          model: db.studentInstrumentSignup,
+          required: false,
+        }
+      ]
     },
     {
       model: db.semester,

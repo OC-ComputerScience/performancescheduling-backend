@@ -168,21 +168,21 @@ exports.delete = (req, res) => {
   const id = req.params.id;
 
   EventSignup.findAll({
-    where: {
-      id: { [Op.eq]: id },
-    },
+    where: { id: id },
     include: [
       {
         model: db.studentInstrumentSignup,
         required: false,
       },
       {
-        model: db.critique,
-        required: false,
-      },
-      {
         model: db.eventSignupPiece,
         required: false,
+        include:[
+          {
+            model: db.critique,
+            required: false,
+          },
+        ]
       },
     ],
   })
@@ -191,17 +191,17 @@ exports.delete = (req, res) => {
 
       for (let y = 0; y < curSingup.studentInstrumentSignups.length; y++) {
         const curStudentSignup =
-          curSingup.studentInstrumentSignups[y].dataValues;
+        curSingup.studentInstrumentSignups[y].dataValues;
         await db.studentInstrumentSignup.destroy({
           where: { id: curStudentSignup.id },
         });
       }
-      for (let y = 0; y < curSingup.critiques.length; y++) {
-        const curCritique = curSingup.critiques[y].dataValues;
-        await db.critique.destroy({ where: { id: curCritique.id } });
-      }
       for (let y = 0; y < curSingup.eventSignupPieces.length; y++) {
         const curPiece = curSingup.eventSignupPieces[y].dataValues;
+        for (let x = 0; x < curPiece.critiques.length; x++) {
+          const curCritique = curPiece.critiques[x].dataValues;
+          await db.critique.destroy({ where: { id: curCritique.id } });
+        }
         await db.eventSignupPiece.destroy({ where: { id: curPiece.id } });
       }
 

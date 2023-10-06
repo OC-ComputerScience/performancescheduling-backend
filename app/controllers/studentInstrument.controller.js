@@ -264,6 +264,10 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.studentInstrumentSignup,
+                required: false,
+              },
+              {
                 model: db.event,
                 required: true,
                 where: dateRule,
