@@ -6,6 +6,10 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       unique: true,
     },
+    isFirst: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return EventSignupPiece;

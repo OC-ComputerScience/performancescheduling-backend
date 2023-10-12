@@ -277,6 +277,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                     required: true,
                   },
                   { model: db.semester, required: true },
+                  { model: db.eventType, required: true },
                 ],
               },
               {
@@ -518,64 +519,67 @@ exports.getStudentsForInstructorId = (req, res) => {
       include: {
         model: db.userRole,
         required: true,
-        include: [{
-          model: StudentInstrument,
-          required: true,
-          as: "studentRole",
-          where: { instructorRoleId: req.params.instructorId },
-          include: [{
-            model: db.instrument,
-            required: true,
-          },
+        include: [
           {
-            model: db.userRole,
-            as: "instructorRole",
+            model: StudentInstrument,
             required: true,
+            as: "studentRole",
+            where: { instructorRoleId: req.params.instructorId },
             include: [
               {
-                model: db.user,
+                model: db.instrument,
                 required: true,
               },
               {
-                model: db.availability,
+                model: db.userRole,
+                as: "instructorRole",
+                required: true,
+                include: [
+                  {
+                    model: db.user,
+                    required: true,
+                  },
+                  {
+                    model: db.availability,
+                    required: false,
+                  },
+                ],
+              },
+              {
+                model: db.userRole,
+                as: "accompanistRole",
+                required: false,
+                include: [
+                  {
+                    model: db.user,
+                    required: true,
+                  },
+                  {
+                    model: db.availability,
+                    required: false,
+                  },
+                ],
+              },
+              {
+                model: db.instrument,
+                required: true,
+              },
+              {
+                model: db.level,
                 required: false,
               },
             ],
           },
           {
-            model: db.userRole,
-            as: "accompanistRole",
-            required: false,
-            include: [
-              {
-                model: db.user,
-                required: true,
-              },
-              {
-                model: db.availability,
-                required: false,
-              },
-            ],
-          },
-          {
-            model: db.instrument,
+            model: db.role,
             required: true,
           },
           {
-            model: db.level,
+            model: db.major,
             required: false,
           },
-        ]
-        },
-        {
-          model: db.role,
-          required: true,
-        },
-        {
-          model: db.major,
-          required: false,
-        }]
-      }
+        ],
+      },
     })
     .then((data) => {
       res.send(data);
