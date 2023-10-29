@@ -131,6 +131,7 @@ exports.findById = (req, res) => {
 exports.findDateAndAfter = (req, res) => {
   const date = req.params.date;
   const role = req.query.role;
+  const sortVar = req.query.sortVar;
 
   const includeModels = [
     {
@@ -172,9 +173,17 @@ exports.findDateAndAfter = (req, res) => {
     });
   }
 
+  var order = [];
+  if (sortVar != undefined) {
+    sortVar.split(',').forEach(function (item) {
+      order.push([item, req.query.order]);
+    });
+  }
+
   Event.findAll({
     where: whereObject,
     include: includeModels,
+    order: order,
   })
     .then((data) => {
       if (data) {
