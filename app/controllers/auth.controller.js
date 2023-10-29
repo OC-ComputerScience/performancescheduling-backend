@@ -65,10 +65,12 @@ exports.login = async (req, res) => {
 
         await UserRole.findAll({
           where: { userId: user.id, status: "Active" },
-          include: {
+          include: [{
             model: Role,
           },
-        })
+          {model: User},
+          {model: Major}
+        ]})
           .then((data) => {
             user.roles = data;
           })
