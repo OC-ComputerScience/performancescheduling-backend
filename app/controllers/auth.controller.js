@@ -2,6 +2,7 @@ const db = require("../models");
 const authconfig = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const Major = db.major;
 const UserRole = db.userRole;
 const Session = db.session;
 
