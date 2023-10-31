@@ -173,7 +173,10 @@ exports.getRolesForUser = (req, res) => {
       userId: { [Op.eq]: req.params.userId },
       status: { [Op.eq]: "Active" },
     },
-  })
+    include: [{ model: db.role},
+      {model: db.user},
+      {model: db.major}
+  ]})
     .then((data) => {
       res.send(data);
     })
