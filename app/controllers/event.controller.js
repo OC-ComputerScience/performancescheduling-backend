@@ -110,7 +110,26 @@ exports.findAll = (req, res) => {
 // Retrieve a(n) event by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  Event.findByPk(id)
+  Event.findOne({
+    where: {id: id},
+    include: 
+      {
+        model: db.eventSignup,
+        include: {
+          model: db.studentInstrumentSignup,
+          include:{
+            model: db.studentInstrument, 
+            include: {
+              model: db.userRole,
+              as: "studentRole",
+              include:{
+                model: db.user
+              }
+            }
+          }
+        }
+      }
+  })
     .then((data) => {
       if (data) {
         res.send(data);
@@ -122,7 +141,7 @@ exports.findById = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving event with id=" + id,
+        message: err.message || "Error retrieving event with id=" + id,
       });
     });
 };

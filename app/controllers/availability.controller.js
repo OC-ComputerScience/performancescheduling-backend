@@ -212,3 +212,28 @@ exports.getByUserRoleAndEvent = (req, res) => {
       });
     });
 };
+
+exports.getAllByEventId = (req, res) => {
+  Availability.findAll({
+    where: {
+      eventId: { [Op.eq]: req.params.eventId},
+    },
+    include: {
+      model: db.userRole,
+      include: [{
+        model: db.user,
+      },
+    {
+      model:db.role,
+    }]
+    },
+  })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    res.status(500).send({
+      message: err.message || "Something went wrong getting availabilities."
+    });
+  });
+}
