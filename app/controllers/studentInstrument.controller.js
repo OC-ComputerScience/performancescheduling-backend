@@ -225,6 +225,9 @@ exports.getByUserId = (req, res) => {
         required: false,
       },
     ],
+    order: [
+      [{ model: db.instrument }, "name", "ASC"],
+    ],
   })
     .then((data) => {
       res.send(data);
