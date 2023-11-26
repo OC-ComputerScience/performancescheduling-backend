@@ -172,7 +172,7 @@ exports.getRolesForUser = (req, res) => {
     where: {
       userId: { [Op.eq]: req.params.userId },
       status: { [Op.eq]: "Active" },
-    },    
+    },
     include: [{ model: db.role},
       {model: db.user},
       {model: db.major}
