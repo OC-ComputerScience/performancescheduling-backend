@@ -101,7 +101,11 @@ exports.findById = (req, res) => {
 // Get all notifications for a user's role
 exports.getByUserRoleId = (req, res) => {
   UserNotification.findAll({
-    where: { userRoleId: { [Op.eq]: req.params.userRoleId } },
+    where: {
+      userRoleId: { [Op.eq]: req.params.userRoleId },
+      isCompleted: { [Op.eq]: false },
+    },
+
     include: [
       {
         model: db.notification,
