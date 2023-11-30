@@ -20,6 +20,11 @@ exports.create = (req, res) => {
       message: "instrumentId cannot be empty!",
     });
     return;
+  } else if (!req.body.semesterId) {
+    res.status(400).send({
+      message: "semesterId cannot be empty!",
+    });
+    return;
   } else if (!req.body.status) {
     res.status(400).send({
       message: "status cannot be empty!",
@@ -34,6 +39,7 @@ exports.create = (req, res) => {
     instructorRoleId: req.body.instructorRoleId,
     accompanistRoleId: req.body.accompanistRoleId,
     instrumentId: req.body.instrumentId,
+    semesterId: req.body.semesterId,
     status: req.body.status,
   };
 
@@ -224,10 +230,12 @@ exports.getByUserId = (req, res) => {
         model: db.level,
         required: false,
       },
+      {
+        model: db.semester,
+        required: true,
+      },
     ],
-    order: [
-      [{ model: db.instrument }, "name", "ASC"],
-    ],
+    order: [[{ model: db.instrument }, "name", "ASC"]],
   })
     .then((data) => {
       res.send(data);
@@ -410,6 +418,10 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                         model: db.instrument,
                         required: true,
                       },
+                      {
+                        model: db.semester,
+                        required: true,
+                      },
                     ],
                   },
                   {
@@ -571,6 +583,10 @@ exports.getStudentsForInstructorId = (req, res) => {
                 model: db.level,
                 required: false,
               },
+              {
+                model: db.semester,
+                required: true,
+              },
             ],
           },
           {
@@ -658,6 +674,10 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       },
       {
         model: db.level,
+        required: false,
+      },
+      {
+        model: db.semester,
         required: false,
       },
     ],
