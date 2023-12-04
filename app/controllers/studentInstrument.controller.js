@@ -341,6 +341,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
     ],
     order: [
       [db.studentInstrumentSignup, db.eventSignup, db.event, "date", order],
+      [db.studentInstrumentSignup, db.eventSignup, "startTime"],
     ],
   })
     .then((data) => {
