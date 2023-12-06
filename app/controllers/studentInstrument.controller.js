@@ -235,7 +235,10 @@ exports.getByUserId = (req, res) => {
         required: true,
       },
     ],
-    order: [[{ model: db.instrument }, "name", "ASC"]],
+    order: [
+      [{ model: db.semester }, "startDate", "DESC"],
+      [{ model: db.instrument }, "name", "ASC"],
+    ],
   })
     .then((data) => {
       res.send(data);

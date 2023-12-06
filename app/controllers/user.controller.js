@@ -197,7 +197,6 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
   }
 
   User.findAll({
-    order: order,
     include: {
       model: db.userRole,
       required: false,
@@ -206,6 +205,7 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
           model: db.studentInstrument,
           as: "studentRole",
           required: false,
+
           include: [
             {
               model: db.userRole,
@@ -261,6 +261,7 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
         },
       ],
     },
+    order: order,
   })
     .then((data) => {
       res.send(data);
