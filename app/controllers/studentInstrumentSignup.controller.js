@@ -214,6 +214,17 @@ exports.getByUserRoleId = (req, res) => {
                   },
                 ],
               },
+              {
+                model: db.critique,
+                required: false,
+                include: [
+                  {
+                    model: db.userRole,
+                    required: true,
+                    include: [{ model: db.user, required: true }],
+                  },
+                ],
+              },
             ],
           },
         ],
