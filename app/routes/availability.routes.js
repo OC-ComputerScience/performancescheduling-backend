@@ -28,5 +28,12 @@ module.exports = (app) => {
     availability.getByUserRoleAndEvent
   );
 
+  // Retrive all event signups and availability info for eventId
+  router.get(
+    "/availability/:eventId",
+    [authenticate],
+    availability.getAllByEventId
+  );
+
   app.use("/performanceapi/availability", router);
 };
