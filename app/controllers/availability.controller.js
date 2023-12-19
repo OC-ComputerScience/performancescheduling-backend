@@ -167,21 +167,28 @@ exports.getByUserRole = (req, res) => {
 
   Availability.findAll({
     where: {
-      userRoleId: { [Op.eq]: req.params.userRoleId }
+      userRoleId: { [Op.eq]: req.params.userRoleId },
     },
     include: {
       model: db.event,
       required: true,
       as: "event",
       where: {
-        date: { [Op.gte]: currentDate }
+        date: { [Op.gte]: currentDate },
       },
-      include: {
-        model: db.location,
-        required: true,
-        as: "location",
-      }
-    }
+      include: [
+        {
+          model: db.location,
+          required: true,
+          as: "location",
+        },
+        {
+          model: db.eventType,
+          required: true,
+          as: "eventType",
+        },
+      ],
+    },
   })
     .then((data) => {
       res.send(data);
@@ -216,24 +223,26 @@ exports.getByUserRoleAndEvent = (req, res) => {
 exports.getAllByEventId = (req, res) => {
   Availability.findAll({
     where: {
-      eventId: { [Op.eq]: req.params.eventId},
+      eventId: { [Op.eq]: req.params.eventId },
     },
     include: {
       model: db.userRole,
-      include: [{
-        model: db.user,
-      },
-    {
-      model:db.role,
-    }]
+      include: [
+        {
+          model: db.user,
+        },
+        {
+          model: db.role,
+        },
+      ],
     },
   })
-  .then((data) => {
-    res.send(data);
-  })
-  .catch((err) => {
-    res.status(500).send({
-      message: err.message || "Something went wrong getting availabilities."
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Something went wrong getting availabilities.",
+      });
     });
-  });
-}
+};
