@@ -5,12 +5,7 @@ const StudentInstrument = db.studentInstrument;
 // Create and Save a new studentInstrument
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.levelId) {
-    res.status(400).send({
-      message: "levelId cannot be empty!",
-    });
-    return;
-  } else if (!req.body.studentRoleId) {
+  if (!req.body.studentRoleId) {
     res.status(400).send({
       message: "studentRoleId cannot be empty!",
     });
@@ -23,6 +18,11 @@ exports.create = (req, res) => {
   } else if (!req.body.instrumentId) {
     res.status(400).send({
       message: "instrumentId cannot be empty!",
+    });
+    return;
+  } else if (!req.body.semesterId) {
+    res.status(400).send({
+      message: "semesterId cannot be empty!",
     });
     return;
   } else if (!req.body.status) {
@@ -39,6 +39,7 @@ exports.create = (req, res) => {
     instructorRoleId: req.body.instructorRoleId,
     accompanistRoleId: req.body.accompanistRoleId,
     instrumentId: req.body.instrumentId,
+    semesterId: req.body.semesterId,
     status: req.body.status,
   };
 
@@ -227,8 +228,16 @@ exports.getByUserId = (req, res) => {
       },
       {
         model: db.level,
+        required: false,
+      },
+      {
+        model: db.semester,
         required: true,
       },
+    ],
+    order: [
+      [{ model: db.semester }, "startDate", "DESC"],
+      [{ model: db.instrument }, "name", "ASC"],
     ],
   })
     .then((data) => {
@@ -268,6 +277,176 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
             model: db.eventSignup,
             required: true,
             include: [
+              {
+                model: db.studentInstrumentSignup,
+                required: false,
+              },
+              {
+                model: db.event,
+                required: true,
+                where: dateRule,
+                include: [
+                  {
+                    model: db.location,
+                    required: true,
+                  },
+                  { model: db.semester, required: true },
+                  { model: db.eventType, required: true },
+                ],
+              },
+              {
+                model: db.eventSignupPiece,
+                required: true,
+                include: [
+                  {
+                    model: db.piece,
+                    required: true,
+                    include: [
+                      {
+                        model: db.composer,
+                        required: true,
+                      },
+                    ],
+                  },
+                  {
+                    model: db.critique,
+                    required: false,
+                    include: [
+                      {
+                        model: db.userRole,
+                        required: true,
+                        include: [{ model: db.user, required: true }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.userRole,
+            as: "instructorRoleSignup",
+            required: true,
+            attributes: [["id", "userRoleId"], "title", "roleId"],
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+            ],
+          },
+          {
+            model: db.userRole,
+            as: "accompanistRoleSignup",
+            required: false,
+            attributes: [["id", "userRoleId"], "title", "roleId"],
+            include: [
+              {
+                model: db.user,
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [
+      [db.studentInstrumentSignup, db.eventSignup, db.event, "date", order],
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving studentInstrumentSignups.",
+      });
+    });
+};
+
+exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
+  let date = req.query.date;
+  let order = req.query.order;
+  let dateRule =
+    req.query.select == "GTE"
+      ? { date: { [Op.gte]: date } }
+      : { date: { [Op.lte]: date } };
+
+  StudentInstrument.findAll({
+    where: { instructorRoleId: { [Op.eq]: req.params.facultyRoleId } },
+    attributes: [["id", "studentInstrumentId"]],
+    include: [
+      {
+        model: db.studentInstrumentSignup,
+        required: true,
+        include: [
+          {
+            model: db.studentInstrument,
+            required: true,
+            include: [
+              { model: db.instrument, required: true },
+              {
+                model: db.userRole,
+                as: "studentRole",
+
+                required: true,
+                include: [{ model: db.user, required: true }],
+              },
+            ],
+          },
+          {
+            model: db.eventSignup,
+            required: true,
+            include: [
+              {
+                model: db.studentInstrumentSignup,
+                required: true,
+                include: [
+                  {
+                    model: db.studentInstrument,
+                    required: true,
+                    include: [
+                      {
+                        model: db.userRole,
+                        required: true,
+                        as: "studentRole",
+                        include: {
+                          model: db.user,
+                          required: true,
+                        },
+                      },
+                      {
+                        model: db.instrument,
+                        required: true,
+                      },
+                      {
+                        model: db.semester,
+                        required: true,
+                      },
+                    ],
+                  },
+                  {
+                    model: db.userRole,
+                    required: true,
+                    as: "instructorRoleSignup",
+                    include: {
+                      model: db.user,
+                      required: true,
+                    },
+                  },
+                  {
+                    model: db.userRole,
+                    required: false,
+                    as: "accompanistRoleSignup",
+                    include: {
+                      model: db.user,
+                      required: true,
+                    },
+                  },
+                ],
+              },
               {
                 model: db.event,
                 required: true,
@@ -358,16 +537,70 @@ exports.getStudentsForInstructorId = (req, res) => {
       include: {
         model: db.userRole,
         required: true,
-        include: {
-          model: StudentInstrument,
-          required: true,
-          as: "studentRole",
-          where: { instructorRoleId: req.params.instructorId },
-          include: {
-            model: db.instrument,
+        include: [
+          {
+            model: StudentInstrument,
+            required: true,
+            as: "studentRole",
+            where: { instructorRoleId: req.params.instructorId },
+            include: [
+              {
+                model: db.instrument,
+                required: true,
+              },
+              {
+                model: db.userRole,
+                as: "instructorRole",
+                required: true,
+                include: [
+                  {
+                    model: db.user,
+                    required: true,
+                  },
+                  {
+                    model: db.availability,
+                    required: false,
+                  },
+                ],
+              },
+              {
+                model: db.userRole,
+                as: "accompanistRole",
+                required: false,
+                include: [
+                  {
+                    model: db.user,
+                    required: true,
+                  },
+                  {
+                    model: db.availability,
+                    required: false,
+                  },
+                ],
+              },
+              {
+                model: db.instrument,
+                required: true,
+              },
+              {
+                model: db.level,
+                required: false,
+              },
+              {
+                model: db.semester,
+                required: true,
+              },
+            ],
+          },
+          {
+            model: db.role,
             required: true,
           },
-        },
+          {
+            model: db.major,
+            required: false,
+          },
+        ],
       },
     })
     .then((data) => {
@@ -444,6 +677,10 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       },
       {
         model: db.level,
+        required: false,
+      },
+      {
+        model: db.semester,
         required: false,
       },
     ],

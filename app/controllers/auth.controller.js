@@ -2,6 +2,7 @@ const db = require("../models");
 const authconfig = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const Major = db.major;
 const UserRole = db.userRole;
 const Session = db.session;
 
@@ -65,10 +66,12 @@ exports.login = async (req, res) => {
 
         await UserRole.findAll({
           where: { userId: user.id, status: "Active" },
-          include: {
+          include: [{
             model: Role,
           },
-        })
+          {model: User},
+          {model: Major}
+        ]})
           .then((data) => {
             user.roles = data;
           })
@@ -105,9 +108,17 @@ exports.login = async (req, res) => {
           userRole.roleId = 2;
         }
 
-        await UserRole.create(userRole)
+        await UserRole.create(userRole).catch((err) => {
+          console.log(err.message);
+        });
+        await UserRole.findAll({
+          where: { userId: user.id, status: "Active" },
+          include: {
+            model: Role,
+          },
+        })
           .then((data) => {
-            user.roles = data.dataValues;
+            user.roles = data;
           })
           .catch((err) => {
             console.log(err.message);

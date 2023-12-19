@@ -49,6 +49,7 @@ exports.create = (req, res) => {
     description: req.body.description,
     defaultSlotDuration: req.body.defaultSlotDuration,
     isPrivate: req.body.isPrivate,
+    firstPiece: req.body.firstPiece,
     status: req.body.status,
   };
 

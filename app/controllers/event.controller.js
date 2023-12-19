@@ -150,6 +150,7 @@ exports.findById = (req, res) => {
 exports.findDateAndAfter = (req, res) => {
   const date = req.params.date;
   const role = req.query.role;
+  const sortVar = req.query.sortVar;
 
   const includeModels = [
     {
@@ -162,6 +163,16 @@ exports.findDateAndAfter = (req, res) => {
     },
     {
       model: db.eventSignup,
+      required: false,
+      include: [
+        {
+          model: db.studentInstrumentSignup,
+          required: false,
+        }
+      ]
+    },
+    {
+      model: db.semester,
       required: false,
     },
   ];
@@ -181,9 +192,17 @@ exports.findDateAndAfter = (req, res) => {
     });
   }
 
+  var order = [];
+  if (sortVar != undefined) {
+    sortVar.split(',').forEach(function (item) {
+      order.push([item, req.query.order]);
+    });
+  }
+
   Event.findAll({
     where: whereObject,
     include: includeModels,
+    order: order,
   })
     .then((data) => {
       if (data) {
@@ -200,45 +219,6 @@ exports.findDateAndAfter = (req, res) => {
       });
     });
 };
-
-// exports.findDateAndAfter = (req, res) => {
-//   const date = req.params.date;
-//   Event.findAll({
-//     where: {
-//       date: {
-//         [Op.gte]: date,
-//       },
-//     },
-//     include: [
-//       {
-//         model: db.location,
-//         required: true,
-//       },
-//       {
-//         model: db.eventSignup,
-//         required: true,
-//       },
-//       {
-//         model: db.eventType,
-//         required: true,
-//       },
-//     ],
-//   })
-//     .then((data) => {
-//       if (data) {
-//         res.send(data);
-//       } else {
-//         res.status(404).send({
-//           message: "Cannot find event on or after " + date,
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error occurred while retrieving events.",
-//       });
-//     });
-// };
 
 // Update a(n) event by the id in the request
 exports.update = (req, res) => {
@@ -388,23 +368,77 @@ exports.getStudentInstrumentSignupsForEventId = (req, res) => {
     include: {
       model: db.eventSignup,
       required: true,
-      include: {
-        model: db.studentInstrumentSignup,
-        required: true,
-        include: {
-          model: db.studentInstrument,
+      include: [
+        {
+          model: db.studentInstrumentSignup,
           required: true,
-          include: {
-            model: db.userRole,
-            required: true,
-            as: "studentRole",
-            include: {
-              model: db.user,
+          include: [
+            {
+              model: db.studentInstrument,
               required: true,
+              include: [
+                {
+                  model: db.userRole,
+                  required: true,
+                  as: "studentRole",
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+                {
+                  model: db.instrument,
+                  required: true,
+                },
+              ],
             },
-          },
+            {
+              model: db.userRole,
+              required: true,
+              as: "instructorRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+            {
+              model: db.userRole,
+              required: false,
+              as: "accompanistRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          ],
         },
-      },
+        {
+          model: db.eventSignupPiece,
+          required: true,
+          include: [
+            {
+              model: db.piece,
+              required: true,
+              include: {
+                model: db.composer,
+                required: true,
+              },
+            },
+            {
+              model: db.critique,
+              required: false,
+              include: {
+                model: db.userRole,
+                required: true,
+                include: {
+                  model: db.user,
+                  required: true,
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
   })
     .then((data) => {

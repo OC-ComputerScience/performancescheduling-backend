@@ -168,12 +168,12 @@ exports.getByUserRole = (req, res) => {
   Availability.findAll({
     where: {
       userRoleId: { [Op.eq]: req.params.userRoleId }
-    },         
+    },
     include: {
       model: db.event,
       required: true,
       as: "event",
-      where:{
+      where: {
         date: { [Op.gte]: currentDate }
       },
       include: {

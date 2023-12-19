@@ -102,23 +102,36 @@ exports.findByEventId = (req, res) => {
     where: {
       eventId: id,
     },
-    include: {
-      model: db.studentInstrumentSignup,
-      required: true,
-      include: {
-        model: db.studentInstrument,
+    include: [
+      {
+        model: db.studentInstrumentSignup,
         required: true,
         include: {
-          model: db.userRole,
-          as: "studentRole",
+          model: db.studentInstrument,
           required: true,
           include: {
-            model: db.user,
+            model: db.userRole,
+            as: "studentRole",
             required: true,
+            include: {
+              model: db.user,
+              required: true,
+            },
           },
         },
       },
-    },
+      {
+        model: db.eventSignupPiece,
+        required: false,
+        include: [
+          {
+            model: db.piece,
+            required: true,
+            include: { model: db.composer, required: true },
+          },
+        ],
+      },
+    ],
   })
     .then((data) => {
       if (data) {
@@ -168,21 +181,21 @@ exports.delete = (req, res) => {
   const id = req.params.id;
 
   EventSignup.findAll({
-    where: {
-      id: { [Op.eq]: id },
-    },
+    where: { id: id },
     include: [
       {
         model: db.studentInstrumentSignup,
         required: false,
       },
       {
-        model: db.critique,
-        required: false,
-      },
-      {
         model: db.eventSignupPiece,
         required: false,
+        include: [
+          {
+            model: db.critique,
+            required: false,
+          },
+        ],
       },
     ],
   })
@@ -196,12 +209,12 @@ exports.delete = (req, res) => {
           where: { id: curStudentSignup.id },
         });
       }
-      for (let y = 0; y < curSingup.critiques.length; y++) {
-        const curCritique = curSingup.critiques[y].dataValues;
-        await db.critique.destroy({ where: { id: curCritique.id } });
-      }
       for (let y = 0; y < curSingup.eventSignupPieces.length; y++) {
         const curPiece = curSingup.eventSignupPieces[y].dataValues;
+        for (let x = 0; x < curPiece.critiques.length; x++) {
+          const curCritique = curPiece.critiques[x].dataValues;
+          await db.critique.destroy({ where: { id: curCritique.id } });
+        }
         await db.eventSignupPiece.destroy({ where: { id: curPiece.id } });
       }
 

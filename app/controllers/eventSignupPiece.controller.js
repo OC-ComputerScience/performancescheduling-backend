@@ -20,6 +20,7 @@ exports.create = (req, res) => {
   const eventSignupPiece = {
     eventSignupId: req.body.eventSignupId,
     pieceId: req.body.pieceId,
+    isFirst: req.body.isFirst,
   };
 
   // Create and Save a new eventSignupPiece
