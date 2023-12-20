@@ -230,6 +230,12 @@ exports.getByUserId = (req, res) => {
         model: db.level,
         required: false,
       },
+
+      {
+        model: db.level,
+        as: "endingLevel",
+        required: false,
+      },
       {
         model: db.semester,
         required: true,
@@ -587,6 +593,16 @@ exports.getStudentsForInstructorId = (req, res) => {
                 required: false,
               },
               {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
                 model: db.semester,
                 required: true,
               },
@@ -677,6 +693,11 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       },
       {
         model: db.level,
+        required: false,
+      },
+      {
+        model: db.level,
+        as: "endingLevel",
         required: false,
       },
       {
