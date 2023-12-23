@@ -29,6 +29,5 @@ module.exports = (app) => {
     [authenticate],
     event.getEventsBySemesterId
   );
-
   app.use("/performanceapi/event", router);
 };
