@@ -533,6 +533,9 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
 };
 
 exports.getStudentsForInstructorId = (req, res) => {
+  let active = req.query.active;
+  let activeRule = active != null ? { status: active } : "";
+
   db.user
     .findAll({
       include: {
@@ -543,7 +546,7 @@ exports.getStudentsForInstructorId = (req, res) => {
             model: StudentInstrument,
             required: true,
             as: "studentRole",
-            where: { instructorRoleId: req.params.instructorId },
+            where: [{ instructorRoleId: req.params.instructorId }, activeRule],
             include: [
               {
                 model: db.instrument,
@@ -613,6 +616,8 @@ exports.getStudentsForInstructorId = (req, res) => {
 };
 
 exports.getStudentsForAccompanistId = (req, res) => {
+  let active = req.query.active;
+  let activeRule = active != null ? { status: active } : "";
   db.user
     .findAll({
       include: {
@@ -622,7 +627,7 @@ exports.getStudentsForAccompanistId = (req, res) => {
           model: StudentInstrument,
           required: true,
           as: "studentRole",
-          where: { accompanistRoleId: req.params.accompanistId },
+          where: [{ accompanistRoleId: req.params.accompanistId }, activeRule],
           include: {
             model: db.instrument,
             required: true,
