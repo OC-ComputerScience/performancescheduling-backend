@@ -284,6 +284,11 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+              {
                 model: db.studentInstrumentSignup,
                 required: false,
               },
@@ -292,6 +297,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,
@@ -407,6 +413,12 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+
+              {
                 model: db.studentInstrumentSignup,
                 required: true,
                 include: [
@@ -458,6 +470,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,

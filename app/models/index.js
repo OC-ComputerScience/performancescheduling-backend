@@ -123,6 +123,10 @@ db.event.hasMany(db.eventSignup, {
 db.eventSignup.belongsTo(db.event, {
   foreignKey: { allowNull: false },
 });
+db.eventSignup.belongsTo(db.level, {
+  as: "endingLevelEventSignup",
+  foreignKey: { name: "endingLevelId", allowNull: true },
+});
 
 //EventSignupPiece FKs
 db.eventSignup.hasMany(db.eventSignupPiece, {
@@ -168,6 +172,10 @@ db.level.hasMany(db.studentInstrument, {
 });
 db.level.hasMany(db.studentInstrumentSignup, {
   as: "endingLevelSignup",
+  foreignKey: { name: "endingLevelId", allowNull: true },
+});
+db.level.hasMany(db.eventSignup, {
+  as: "endingLevelEventSignup",
   foreignKey: { name: "endingLevelId", allowNull: true },
 });
 db.userRole.hasMany(db.studentInstrument, {
@@ -238,6 +246,7 @@ db.studentInstrumentEvaluation.belongsTo(db.userRole, {
 });
 
 //StudentInstrumentSignup FKs
+
 db.eventSignup.hasMany(db.studentInstrumentSignup, {
   foreignKey: { allowNull: false },
 });
