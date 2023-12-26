@@ -106,6 +106,7 @@ exports.login = async (req, res) => {
 
         if (email.includes("@eagles.oc.edu")) {
           userRole.roleId = 1;
+          user.status = "Disabled";
         } else if (email.includes("@oc.edu")) {
           userRole.roleId = 2;
         }
@@ -228,13 +229,11 @@ exports.authorize = async (req, res) => {
     "postmessage"
   );
 
-  console.log("authorize token");
   // Get access and refresh tokens (if access_type is offline)
   let { tokens } = await oauth2Client.getToken(req.body.code);
   oauth2Client.setCredentials(tokens);
 
   let user = {};
-  console.log("findUser");
 
   await User.findOne({
     where: {
@@ -250,8 +249,7 @@ exports.authorize = async (req, res) => {
       res.status(500).send({ message: err.message });
       return;
     });
-  console.log("user");
-  console.log(user);
+
   user.refresh_token = tokens.refresh_token;
   let tempExpirationDate = new Date();
   tempExpirationDate.setDate(tempExpirationDate.getDate() + 100);
