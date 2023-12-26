@@ -66,12 +66,14 @@ exports.login = async (req, res) => {
 
         await UserRole.findAll({
           where: { userId: user.id, status: "Active" },
-          include: [{
-            model: Role,
-          },
-          {model: User},
-          {model: Major}
-        ]})
+          include: [
+            {
+              model: Role,
+            },
+            { model: User },
+            { model: Major },
+          ],
+        })
           .then((data) => {
             user.roles = data;
           })
@@ -169,6 +171,7 @@ exports.login = async (req, res) => {
             userId: user.id,
             token: session.token,
             role: user.roles,
+            status: user.status,
           };
           res.send(userInfo);
         }
@@ -205,6 +208,7 @@ exports.login = async (req, res) => {
           userId: user.id,
           token: token,
           roles: user.roles,
+          status: user.status,
           // refresh_token: user.refresh_token,
           // expiration_date: user.expiration_date
         };

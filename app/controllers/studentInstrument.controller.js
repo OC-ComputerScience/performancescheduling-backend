@@ -645,6 +645,10 @@ exports.getStudentsForAccompanistId = (req, res) => {
 exports.getStudentInstrumentsForStudentId = (req, res) => {
   StudentInstrument.findAll({
     where: { studentRoleId: req.params.studentId },
+    order: [
+      [{ model: db.semester }, "startDate", "DESC"],
+      [{ model: db.instrument }, "name", "ASC"],
+    ],
     include: [
       {
         model: db.userRole,
