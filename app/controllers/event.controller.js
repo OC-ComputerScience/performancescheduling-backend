@@ -364,6 +364,7 @@ exports.deleteAll = (req, res) => {
 exports.getStudentInstrumentSignupsForEventId = (req, res) => {
   Event.findAll({
     where: { id: req.params.eventId },
+    order: [[db.eventSignup, "startTime", "ASC"]],
     include: [
       {
         model: db.eventType,
