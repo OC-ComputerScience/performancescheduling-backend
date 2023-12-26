@@ -435,33 +435,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                           required: true,
                         },
                       },
-                      {
-                        model: db.instrument,
-                        required: true,
-                      },
-                      {
-                        model: db.semester,
-                        required: true,
-                      },
                     ],
-                  },
-                  {
-                    model: db.userRole,
-                    required: true,
-                    as: "instructorRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
-                  },
-                  {
-                    model: db.userRole,
-                    required: false,
-                    as: "accompanistRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
                   },
                 ],
               },
