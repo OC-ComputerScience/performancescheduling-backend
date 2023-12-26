@@ -170,10 +170,7 @@ db.level.hasMany(db.studentInstrument, {
   as: "endingLevel",
   foreignKey: { name: "endingLevelId", allowNull: true },
 });
-db.level.hasMany(db.studentInstrumentSignup, {
-  as: "endingLevelSignup",
-  foreignKey: { name: "endingLevelId", allowNull: true },
-});
+
 db.level.hasMany(db.eventSignup, {
   as: "endingLevelEventSignup",
   foreignKey: { name: "endingLevelId", allowNull: true },
@@ -275,11 +272,6 @@ db.studentInstrumentSignup.belongsTo(db.userRole, {
 db.studentInstrumentSignup.belongsTo(db.userRole, {
   as: "accompanistRoleSignup",
   foreignKey: { name: "accompanistRoleId", allowNull: true },
-});
-
-db.studentInstrument.belongsTo(db.level, {
-  as: "endingLevelSignup",
-  foreignKey: { name: "endingLevelId", allowNull: true },
 });
 
 //StudentPiece FKs
