@@ -701,7 +701,7 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
 
 //Disable all students' instruments
 exports.disableAllStudentsInstruments = (res) => {
-  StudentInstrument.update({ status: 'Active' }, { where: {} })
+  StudentInstrument.update({ status: 'Disabled' }, { where: {} })
   .then((data) => {
     res.send(data);
   })
