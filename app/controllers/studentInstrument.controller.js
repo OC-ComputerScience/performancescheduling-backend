@@ -698,3 +698,14 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+//Disable all students' instruments
+exports.disableAllStudentsInstruments = (res) => {
+  StudentInstrument.update({ status: 'Active' }, { where: {} })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+  };
