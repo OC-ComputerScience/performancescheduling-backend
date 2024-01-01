@@ -102,23 +102,36 @@ exports.findByEventId = (req, res) => {
     where: {
       eventId: id,
     },
-    include: {
-      model: db.studentInstrumentSignup,
-      required: true,
-      include: {
-        model: db.studentInstrument,
+    include: [
+      {
+        model: db.studentInstrumentSignup,
         required: true,
         include: {
-          model: db.userRole,
-          as: "studentRole",
+          model: db.studentInstrument,
           required: true,
           include: {
-            model: db.user,
+            model: db.userRole,
+            as: "studentRole",
             required: true,
+            include: {
+              model: db.user,
+              required: true,
+            },
           },
         },
       },
-    },
+      {
+        model: db.eventSignupPiece,
+        required: false,
+        include: [
+          {
+            model: db.piece,
+            required: true,
+            include: { model: db.composer, required: true },
+          },
+        ],
+      },
+    ],
   })
     .then((data) => {
       if (data) {
@@ -177,12 +190,12 @@ exports.delete = (req, res) => {
       {
         model: db.eventSignupPiece,
         required: false,
-        include:[
+        include: [
           {
             model: db.critique,
             required: false,
           },
-        ]
+        ],
       },
     ],
   })
@@ -191,7 +204,7 @@ exports.delete = (req, res) => {
 
       for (let y = 0; y < curSingup.studentInstrumentSignups.length; y++) {
         const curStudentSignup =
-        curSingup.studentInstrumentSignups[y].dataValues;
+          curSingup.studentInstrumentSignups[y].dataValues;
         await db.studentInstrumentSignup.destroy({
           where: { id: curStudentSignup.id },
         });
