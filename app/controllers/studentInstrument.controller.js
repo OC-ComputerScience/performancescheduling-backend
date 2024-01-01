@@ -230,6 +230,12 @@ exports.getByUserId = (req, res) => {
         model: db.level,
         required: false,
       },
+
+      {
+        model: db.level,
+        as: "endingLevel",
+        required: false,
+      },
       {
         model: db.semester,
         required: true,
@@ -278,6 +284,11 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+              {
                 model: db.studentInstrumentSignup,
                 required: false,
               },
@@ -286,6 +297,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,
@@ -401,6 +413,12 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+
+              {
                 model: db.studentInstrumentSignup,
                 required: true,
                 include: [
@@ -417,33 +435,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                           required: true,
                         },
                       },
-                      {
-                        model: db.instrument,
-                        required: true,
-                      },
-                      {
-                        model: db.semester,
-                        required: true,
-                      },
                     ],
-                  },
-                  {
-                    model: db.userRole,
-                    required: true,
-                    as: "instructorRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
-                  },
-                  {
-                    model: db.userRole,
-                    required: false,
-                    as: "accompanistRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
                   },
                 ],
               },
@@ -452,6 +444,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,
@@ -590,6 +583,16 @@ exports.getStudentsForInstructorId = (req, res) => {
                 required: false,
               },
               {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
                 model: db.semester,
                 required: true,
               },
@@ -682,6 +685,11 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       },
       {
         model: db.level,
+        required: false,
+      },
+      {
+        model: db.level,
+        as: "endingLevel",
         required: false,
       },
       {
