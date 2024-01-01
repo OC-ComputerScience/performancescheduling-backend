@@ -14,13 +14,13 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
     originalLyrics: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(1000),
     },
     poeticTranslation: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(1000),
     },
     literalTranslation: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(5000),
     },
     status: {
       type: Sequelize.STRING,
