@@ -281,3 +281,22 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
       });
     });
 };
+
+// Disable all users
+exports.disableAllUsers = async (req, res) => {
+  const studentUserRoles = await db.userRole.findAll({
+    where: { roleId: 1 },
+  });
+
+  const userIds = studentUserRoles.map((userRole) => userRole.userId);
+
+  await User.update(
+    { status: 'Disabled' }, 
+    { where: { id: userIds } })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+};

@@ -364,6 +364,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
     ],
     order: [
       [db.studentInstrumentSignup, db.eventSignup, db.event, "date", order],
+      [db.studentInstrumentSignup, db.eventSignup, "startTime"],
     ],
   })
     .then((data) => {
@@ -705,3 +706,14 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+//Disable all students' instruments
+exports.disableAllStudentsInstruments = (res) => {
+  StudentInstrument.update({ status: 'Disabled' }, { where: {} })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+  };
