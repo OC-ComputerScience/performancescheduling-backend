@@ -159,4 +159,116 @@ exports.deleteAll = (req, res) => {
           "Some error occurred while removing all studentInstrumentSignups.",
       });
     });
+
 };
+
+exports.getByUserRoleId = (req, res) => {
+  let date = req.query.date;
+  let order = req.query.order;
+  let dateRule =
+    req.query.select == "GTE"
+      ? { date: { [Op.gte]: date } }
+      : { date: { [Op.lte]: date } };
+
+  StudentInstrumentSignup.findAll({
+    include: [
+      {
+        model: db.studentInstrument,
+        where: {
+          studentRoleId: { [Op.eq]: req.params.userRoleId },
+        },
+        include: [{ model: db.instrument, required: true }],
+      },
+
+      {
+        model: db.eventSignup,
+        required: true,
+        include: [
+          {
+            model: db.studentInstrumentSignup,
+            required: false,
+          },
+          {
+            model: db.event,
+            required: true,
+            where: dateRule,
+            include: [
+              {
+                model: db.location,
+                required: true,
+              },
+              { model: db.semester, required: true },
+              { model: db.eventType, required: true },
+            ],
+          },
+          {
+            model: db.eventSignupPiece,
+            required: true,
+            include: [
+              {
+                model: db.piece,
+                required: true,
+                include: [
+                  {
+                    model: db.composer,
+                    required: true,
+                  },
+                ],
+              },
+              {
+                model: db.critique,
+                required: false,
+                include: [
+                  {
+                    model: db.userRole,
+                    required: true,
+                    include: [{ model: db.user, required: true }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: db.userRole,
+        as: "instructorRoleSignup",
+        required: true,
+        attributes: [["id", "userRoleId"], "title", "roleId"],
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+        ],
+      },
+      {
+        model: db.userRole,
+        as: "accompanistRoleSignup",
+        required: false,
+        attributes: [["id", "userRoleId"], "title", "roleId"],
+        include: [
+          {
+            model: db.user,
+            required: true,
+          },
+        ],
+      },
+    ],
+    order: [
+      [db.eventSignup, db.event, "date", order],
+      [db.eventSignup, "startTime"],
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving studentInstrumentSignups.",
+      });
+    });
+};
+
