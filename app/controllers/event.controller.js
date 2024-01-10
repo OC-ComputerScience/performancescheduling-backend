@@ -110,7 +110,54 @@ exports.findAll = (req, res) => {
 // Retrieve a(n) event by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  Event.findByPk(id)
+  Event.findOne({
+    where: { id: id },
+    include: {
+      model: db.eventSignup,
+      include: [
+        {
+          model: db.studentInstrumentSignup,
+          include: [
+            {
+              model: db.studentInstrument,
+              include: [
+                {
+                  model: db.userRole,
+                  as: "studentRole",
+                  include: {
+                    model: db.user,
+                  },
+                },
+                {
+                  model: db.instrument,
+                  required: true,
+                },
+              ],
+            },
+
+            {
+              model: db.userRole,
+              required: true,
+              as: "instructorRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+            {
+              model: db.userRole,
+              required: false,
+              as: "accompanistRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  })
     .then((data) => {
       if (data) {
         res.send(data);
@@ -122,7 +169,7 @@ exports.findById = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving event with id=" + id,
+        message: err.message || "Error retrieving event with id=" + id,
       });
     });
 };
@@ -149,8 +196,8 @@ exports.findDateAndAfter = (req, res) => {
         {
           model: db.studentInstrumentSignup,
           required: false,
-        }
-      ]
+        },
+      ],
     },
     {
       model: db.semester,
@@ -175,7 +222,7 @@ exports.findDateAndAfter = (req, res) => {
 
   var order = [];
   if (sortVar != undefined) {
-    sortVar.split(',').forEach(function (item) {
+    sortVar.split(",").forEach(function (item) {
       order.push([item, req.query.order]);
     });
   }
@@ -346,81 +393,93 @@ exports.deleteAll = (req, res) => {
 exports.getStudentInstrumentSignupsForEventId = (req, res) => {
   Event.findAll({
     where: { id: req.params.eventId },
-    include: {
-      model: db.eventSignup,
-      required: true,
-      include: [
-        {
-          model: db.studentInstrumentSignup,
-          required: true,
-          include: [
-            {
-              model: db.studentInstrument,
-              required: true,
-              include: [
-                {
-                  model: db.userRole,
-                  required: true,
-                  as: "studentRole",
-                  include: {
-                    model: db.user,
+    order: [[db.eventSignup, "startTime", "ASC"]],
+    include: [
+      {
+        model: db.eventType,
+        required: true,
+      },
+      {
+        model: db.eventSignup,
+        required: true,
+        include: [
+          {
+            model: db.level,
+            as: "endingLevelEventSignup",
+            required: false,
+          },
+          {
+            model: db.studentInstrumentSignup,
+            required: true,
+            include: [
+              {
+                model: db.studentInstrument,
+                required: true,
+                include: [
+                  {
+                    model: db.userRole,
+                    required: true,
+                    as: "studentRole",
+                    include: {
+                      model: db.user,
+                      required: true,
+                    },
+                  },
+                  {
+                    model: db.instrument,
                     required: true,
                   },
-                },
-                {
-                  model: db.instrument,
-                  required: true,
-                },
-              ],
-            },
-            {
-              model: db.userRole,
-              required: true,
-              as: "instructorRoleSignup",
-              include: {
-                model: db.user,
-                required: true,
+                ],
               },
-            },
-            {
-              model: db.userRole,
-              required: false,
-              as: "accompanistRoleSignup",
-              include: {
-                model: db.user,
-                required: true,
-              },
-            },
-          ],
-        },
-        {
-          model: db.eventSignupPiece,
-          required: true,
-          include: [
-            {
-              model: db.piece,
-              required: true,
-              include: {
-                model: db.composer,
-                required: true,
-              },
-            },
-            {
-              model: db.critique,
-              required: false,
-              include: {
+              {
                 model: db.userRole,
                 required: true,
+                as: "instructorRoleSignup",
                 include: {
                   model: db.user,
                   required: true,
                 },
               },
-            },
-          ],
-        },
-      ],
-    },
+              {
+                model: db.userRole,
+                required: false,
+                as: "accompanistRoleSignup",
+                include: {
+                  model: db.user,
+                  required: true,
+                },
+              },
+            ],
+          },
+          {
+            model: db.eventSignupPiece,
+            required: true,
+            include: [
+              {
+                model: db.piece,
+                required: true,
+                include: {
+                  model: db.composer,
+                  required: true,
+                },
+              },
+              {
+                model: db.critique,
+                required: false,
+                include: {
+                  model: db.userRole,
+                  required: true,
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
   })
     .then((data) => {
       res.send(data);
