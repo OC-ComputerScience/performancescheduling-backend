@@ -56,5 +56,8 @@ module.exports = (app) => {
     studentInstrument.getStudentInstrumentsForStudentId
   );
 
+    // Disable all students' instruments
+    router.put("/", [authenticate], studentInstrument.disableAllStudentsInstruments);
+
   app.use("/performanceapi/studentInstrument", router);
 };
