@@ -429,6 +429,7 @@ exports.getStudentInstrumentSignupsForEventId = (req, res) => {
                     model: db.instrument,
                     required: true,
                   },
+                  {model :db.level, required: false},
                 ],
               },
               {
