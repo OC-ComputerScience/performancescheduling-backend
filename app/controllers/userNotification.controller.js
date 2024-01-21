@@ -1,9 +1,12 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const UserNotification = db.userNotification;
+const Notification = db.notification;
+const UserRole = db.userRole;
+const { sendMail } = require("../utilities/sendMail.js");
 
 // Create and Save a new userNotification
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // Validate request
   if (!req.body.userRoleId) {
     res.status(400).send({
@@ -31,6 +34,44 @@ exports.create = (req, res) => {
     });
     return;
   }
+  let from = null;
+  if (req.body.from !== undefined) from = req.body.from;
+
+  // lool up notice type for subject
+  let subject = "";
+
+  await Notification.findByPk(req.body.notificationId)
+    .then((data) => {
+      subject = data.type;
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while creating the userNotification.",
+      });
+      return;
+    });
+
+  let user = {};
+  await UserRole.findAll({
+    where: {
+      id: { [Op.eq]: req.body.userRoleId },
+    },
+    include: [{ model: db.user }],
+  })
+    .then((data) => {
+      user = data[0].user;
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while creating the userNotification.",
+      });
+      return;
+    });
 
   const userNotification = {
     userRoleId: req.body.userRoleId,
@@ -43,6 +84,17 @@ exports.create = (req, res) => {
   // Create and Save a new userNotification
   UserNotification.create(userNotification)
     .then((data) => {
+      // Send email to user
+      if (from != null && user.emailStatus) {
+        console.log("Sending email to: " + user.email);
+        sendMail(
+          from,
+          user.email,
+          "",
+          "Performance Scheduling : " + subject,
+          user.firstName + ",\n\n" + req.body.text + ".\n\n Thanks!"
+        );
+      }
       res.send(data);
     })
     .catch((err) => {

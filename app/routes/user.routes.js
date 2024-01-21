@@ -23,6 +23,8 @@ module.exports = (app) => {
     [authenticate],
     user.getAllWithRolesAndStudentInstrumentData
   );
+  // Disable all users
+  router.put("/", [authenticate], user.disableAllUsers);
 
   app.use("/performanceapi/user", router);
 };

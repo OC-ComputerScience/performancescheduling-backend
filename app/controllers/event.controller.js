@@ -114,19 +114,48 @@ exports.findById = (req, res) => {
     where: { id: id },
     include: {
       model: db.eventSignup,
-      include: {
-        model: db.studentInstrumentSignup,
-        include: {
-          model: db.studentInstrument,
-          include: {
-            model: db.userRole,
-            as: "studentRole",
-            include: {
-              model: db.user,
+      include: [
+        {
+          model: db.studentInstrumentSignup,
+          include: [
+            {
+              model: db.studentInstrument,
+              include: [
+                {
+                  model: db.userRole,
+                  as: "studentRole",
+                  include: {
+                    model: db.user,
+                  },
+                },
+                {
+                  model: db.instrument,
+                  required: true,
+                },
+              ],
             },
-          },
+
+            {
+              model: db.userRole,
+              required: true,
+              as: "instructorRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+            {
+              model: db.userRole,
+              required: false,
+              as: "accompanistRoleSignup",
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          ],
         },
-      },
+      ],
     },
   })
     .then((data) => {
@@ -400,6 +429,7 @@ exports.getStudentInstrumentSignupsForEventId = (req, res) => {
                     model: db.instrument,
                     required: true,
                   },
+                  {model :db.level, required: false},
                 ],
               },
               {
