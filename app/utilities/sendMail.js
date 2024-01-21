@@ -1,9 +1,9 @@
 const nodemailer = require("nodemailer");
-
+/*
 const email_user = process.env.EMAIL_USER;
 const email_pw = process.env.EMAIL_PW;
 const email_host = process.env.EMAIL_HOST;
-/*
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -14,14 +14,9 @@ const transporter = nodemailer.createTransport({
 */
 
 const transporter = nodemailer.createTransport({
-  host: email_host,
+  host: "SMTP.oc.edu",
   port: 25,
   secure: false,
-  auth: {
-    // TODO: replace `user` and `pass` values
-    user: email_user,
-    pass: email_pw,
-  },
   debug: true, // show debug output
   logger: true, // log information in console
 });
