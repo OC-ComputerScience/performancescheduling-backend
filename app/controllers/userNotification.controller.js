@@ -85,6 +85,7 @@ exports.create = async (req, res) => {
   UserNotification.create(userNotification)
     .then((data) => {
       // Send email to user
+      console.log("Sending email to: " + user.email+"from: "+from + " emailStatus: "+user.emailStatus );
       if (from != null && user.emailStatus) {
         console.log("Sending email to: " + user.email);
         sendMail(
