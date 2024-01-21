@@ -230,6 +230,12 @@ exports.getByUserId = (req, res) => {
         model: db.level,
         required: false,
       },
+
+      {
+        model: db.level,
+        as: "endingLevel",
+        required: false,
+      },
       {
         model: db.semester,
         required: true,
@@ -278,6 +284,11 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+              {
                 model: db.studentInstrumentSignup,
                 required: false,
               },
@@ -286,6 +297,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,
@@ -352,6 +364,7 @@ exports.getStudentInstrumentSignupsByUserRoleId = (req, res) => {
     ],
     order: [
       [db.studentInstrumentSignup, db.eventSignup, db.event, "date", order],
+      [db.studentInstrumentSignup, db.eventSignup, "startTime"],
     ],
   })
     .then((data) => {
@@ -401,6 +414,12 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
             required: true,
             include: [
               {
+                model: db.level,
+                as: "endingLevelEventSignup",
+                required: false,
+              },
+
+              {
                 model: db.studentInstrumentSignup,
                 required: true,
                 include: [
@@ -417,33 +436,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                           required: true,
                         },
                       },
-                      {
-                        model: db.instrument,
-                        required: true,
-                      },
-                      {
-                        model: db.semester,
-                        required: true,
-                      },
                     ],
-                  },
-                  {
-                    model: db.userRole,
-                    required: true,
-                    as: "instructorRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
-                  },
-                  {
-                    model: db.userRole,
-                    required: false,
-                    as: "accompanistRoleSignup",
-                    include: {
-                      model: db.user,
-                      required: true,
-                    },
                   },
                 ],
               },
@@ -452,6 +445,7 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
                 required: true,
                 where: dateRule,
                 include: [
+                  { model: db.eventType, required: true },
                   {
                     model: db.location,
                     required: true,
@@ -532,6 +526,9 @@ exports.getStudentInstrumentSignupsByFacultyRoleId = (req, res) => {
 };
 
 exports.getStudentsForInstructorId = (req, res) => {
+  let active = req.query.active;
+  let activeRule = active != null ? { status: active } : "";
+
   db.user
     .findAll({
       include: {
@@ -542,7 +539,7 @@ exports.getStudentsForInstructorId = (req, res) => {
             model: StudentInstrument,
             required: true,
             as: "studentRole",
-            where: { instructorRoleId: req.params.instructorId },
+            where: [{ instructorRoleId: req.params.instructorId }, activeRule],
             include: [
               {
                 model: db.instrument,
@@ -587,6 +584,16 @@ exports.getStudentsForInstructorId = (req, res) => {
                 required: false,
               },
               {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
+                model: db.level,
+                as: "endingLevel",
+                required: false,
+              },
+              {
                 model: db.semester,
                 required: true,
               },
@@ -612,6 +619,8 @@ exports.getStudentsForInstructorId = (req, res) => {
 };
 
 exports.getStudentsForAccompanistId = (req, res) => {
+  let active = req.query.active;
+  let activeRule = active != null ? { status: active } : "";
   db.user
     .findAll({
       include: {
@@ -621,7 +630,7 @@ exports.getStudentsForAccompanistId = (req, res) => {
           model: StudentInstrument,
           required: true,
           as: "studentRole",
-          where: { accompanistRoleId: req.params.accompanistId },
+          where: [{ accompanistRoleId: req.params.accompanistId }, activeRule],
           include: {
             model: db.instrument,
             required: true,
@@ -640,6 +649,10 @@ exports.getStudentsForAccompanistId = (req, res) => {
 exports.getStudentInstrumentsForStudentId = (req, res) => {
   StudentInstrument.findAll({
     where: { studentRoleId: req.params.studentId },
+    order: [
+      [{ model: db.semester }, "startDate", "DESC"],
+      [{ model: db.instrument }, "name", "ASC"],
+    ],
     include: [
       {
         model: db.userRole,
@@ -680,6 +693,11 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
         required: false,
       },
       {
+        model: db.level,
+        as: "endingLevel",
+        required: false,
+      },
+      {
         model: db.semester,
         required: false,
       },
@@ -692,3 +710,14 @@ exports.getStudentInstrumentsForStudentId = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+//Disable all students' instruments
+exports.disableAllStudentsInstruments = (res) => {
+  StudentInstrument.update({ status: 'Disabled' }, { where: {} })
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+  };

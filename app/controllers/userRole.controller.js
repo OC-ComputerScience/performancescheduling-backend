@@ -204,6 +204,9 @@ exports.getAllRolesForRoleId = (req, res) => {
     },
     include: {
       model: db.user,
+      where: {
+        status: { [Op.eq]: "Active" },
+      },
       required: true,
     },
   })

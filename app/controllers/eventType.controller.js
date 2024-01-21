@@ -51,6 +51,8 @@ exports.create = (req, res) => {
     isPrivate: req.body.isPrivate,
     firstPiece: req.body.firstPiece,
     status: req.body.status,
+    allowGrade: req.body.allowGrade,
+    allowEndingLevel: req.body.allowEndingLevel,
   };
 
   // Create and Save a new eventType
