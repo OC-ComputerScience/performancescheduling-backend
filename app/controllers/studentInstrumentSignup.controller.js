@@ -299,9 +299,7 @@ exports.findAllWithAllData = (req, res) => {
               {
                 model: db.semester,
                 required: true,
-                where: {
-                  name: { [Op.eq]: "2024-SP" },
-                },
+           
               },
             ]
           },
