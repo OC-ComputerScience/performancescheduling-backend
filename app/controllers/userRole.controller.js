@@ -173,10 +173,8 @@ exports.getRolesForUser = (req, res) => {
       userId: { [Op.eq]: req.params.userId },
       status: { [Op.eq]: "Active" },
     },
-    include: [{ model: db.role},
-      {model: db.user},
-      {model: db.major}
-  ]})
+    include: [{ model: db.role }, { model: db.user }, { model: db.major }],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -197,7 +195,7 @@ exports.getAllRolesForRoleId = (req, res) => {
        userStatus= { status: { [Op.eq]: "Active" }}; 
 
   if (sortVar != undefined) {
-    sortVar.split(',').forEach(function (item) {
+    sortVar.split(",").forEach(function (item) {
       order.push([db.user, item, req.query.order]);
     });
   }
