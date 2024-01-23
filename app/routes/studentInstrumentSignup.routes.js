@@ -2,7 +2,8 @@ module.exports = (app) => {
   const studentInstrumentSignup = require("../controllers/studentInstrumentSignup.controller.js");
   const { authenticate } = require("../authorization/authorization.js");
   var router = require("express").Router();
-
+  // Retrive All StudentInstrumentSignups with extra Data
+  router.get("/allData", [authenticate], studentInstrumentSignup.findAllWithAllData);
   // Create a new studentInstrumentSignup
   router.post("/", [authenticate], studentInstrumentSignup.create);
   // Retrieve all studentInstrumentSignups
@@ -17,6 +18,7 @@ module.exports = (app) => {
   router.delete("/", [authenticate], studentInstrumentSignup.deleteAll);
   // Get by userRoleId
   router.get("/userRoleId/:userRoleId", [authenticate], studentInstrumentSignup.getByUserRoleId);
+
 
   app.use("/performanceapi/studentInstrumentSignup", router);
 };
