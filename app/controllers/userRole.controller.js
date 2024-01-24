@@ -189,6 +189,10 @@ exports.getRolesForUser = (req, res) => {
 exports.getAllRolesForRoleId = (req, res) => {
   const sortVar = req.query.sortVar;
   const order = [];
+  if (req.query.userStatus="All") 
+      userStatus ="";
+    else
+       userStatus= { status: { [Op.eq]: "Active" }}; 
 
   if (sortVar != undefined) {
     sortVar.split(",").forEach(function (item) {
@@ -197,16 +201,14 @@ exports.getAllRolesForRoleId = (req, res) => {
   }
 
   UserRole.findAll({
-    order: order,
+    order: [[db.user, "lastName", "ASC"], [db.user, "firstName", "ASC"] ],
     where: {
       roleId: { [Op.eq]: req.params.roleId },
       status: { [Op.eq]: "Active" },
     },
     include: {
       model: db.user,
-      where: {
-        status: { [Op.eq]: "Active" },
-      },
+      where:  userStatus,
       required: true,
     },
   })

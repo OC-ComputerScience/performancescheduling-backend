@@ -272,3 +272,143 @@ exports.getByUserRoleId = (req, res) => {
     });
 };
 
+exports.findAllWithAllData = (req, res) => {
+  StudentInstrumentSignup.findAll({
+
+    order: [
+      [db.eventSignup, db.event, "date", "DESC"],
+      [db.eventSignup, "startTime", "ASC"]
+    ],
+
+    include: [
+      {
+        model: db.eventSignup,
+        required: true,
+        include: [
+          { model: db.event, required: true, 
+            
+            include: [
+              {
+                model: db.eventType,
+                required: true,
+              },
+              {
+                model: db.location,
+                required: true,
+              },
+              {
+                model: db.semester,
+                required: true,
+           
+              },
+            ]
+          },
+          {
+            model: db.level,as:"endingLevelEventSignup",
+          },
+         
+          {model: db.studentInstrumentSignup, required: true,
+            
+            include: [
+              {model: db.userRole, as: "instructorRoleSignup", required: true,
+              include: [
+                {model: db.user, required: true},
+              ]},
+              {model: db.userRole, as: "accompanistRoleSignup", required: false,
+              include: [
+                {model: db.user, required: true},
+              ]},
+              {model: db.studentInstrument, required: true, 
+                include: [
+                  {model: db.instrument, required: true},
+                  {model: db.userRole, as: "studentRole", required: true, 
+                    include: [
+                      {model: db.user, required: true},
+                    ]},
+                    {model: db.level, required: false}
+                ]}, 
+
+            ]
+          },
+         
+          {
+            model: db.eventSignupPiece,
+            required: true,
+          
+            include: [
+              {
+                model: db.piece,
+                required: true,
+                include: {
+                  model: db.composer,
+                  required: true,
+                },
+              },
+              {
+                model: db.critique,
+                required: false,
+                include: {
+                  model: db.userRole,
+                  required: true,
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+              },
+            ],
+          },
+        ]
+      },
+      {
+        model: db.studentInstrument,
+        required: true,
+        include: [
+          {
+            model: db.userRole,
+            required: true,
+            as: "studentRole",
+            include: {
+              model: db.user,
+              required: true,
+            },
+          },
+          {
+            model: db.instrument,
+            required: true,
+          },
+          {model :db.level, required: false},
+        ],
+      },
+                  
+
+      {
+        model: db.userRole,
+        required: true,
+        as: "instructorRoleSignup",
+        include: {
+          model: db.user,
+          required: true,
+        },
+      },
+      {
+        model: db.userRole,
+        required: false,
+        as: "accompanistRoleSignup",
+        include: {
+          model: db.user,
+          required: true,
+        },
+      },
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
+      });
+    });
+};
+
