@@ -201,7 +201,7 @@ exports.getByUserRole = (req, res) => {
     });
 };
 
-// Get all availabilities by userRoleId and eventId
+// Get all availabilities by userRoleId and eventId.
 exports.getByUserRoleAndEvent = (req, res) => {
   Availability.findAll({
     where: {
