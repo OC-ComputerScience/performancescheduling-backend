@@ -219,6 +219,28 @@ exports.getByUserRoleAndEvent = (req, res) => {
       });
     });
 };
+// Get all availabilities by roleId and eventId
+exports.getByRoleAndEvent = (req, res) => {
+  Availability.findAll({
+    where: {
+      eventId: { [Op.eq]: req.params.eventId },
+    },
+    include: {
+        model: db.userRole, 
+        required: true, 
+        where: {roleId: {[Op.eq]: req.params.roleId}} 
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Availabilities.",
+      });
+    });
+};
 
 exports.getAllByEventId = (req, res) => {
   Availability.findAll({
