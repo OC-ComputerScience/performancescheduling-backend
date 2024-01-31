@@ -5,7 +5,10 @@ module.exports = (app) => {
 
   // Create a new studentInstrumentEvaluation
   router.post("/", [authenticate], studentInstrumentEvaluation.create);
-  // Retrieve all studentInstrumentEvaluations
+ 
+  // Retrieve a single studentInstrumentEvaluation with id
+  router.get("/studentInstrument/:id", [authenticate], studentInstrumentEvaluation.findByStudentInstrumentId);
+ // Retrieve all studentInstrumentEvaluations
   router.get("/", [authenticate], studentInstrumentEvaluation.findAll);
   // Retrieve a single studentInstrumentEvaluation with id
   router.get("/:id", [authenticate], studentInstrumentEvaluation.findById);
@@ -15,6 +18,5 @@ module.exports = (app) => {
   router.delete("/:id", [authenticate], studentInstrumentEvaluation.delete);
   // Delete all studentInstrumentEvaluations
   router.delete("/", [authenticate], studentInstrumentEvaluation.deleteAll);
-
-  app.use("/performanceapi/studentInstrumentEvaluation", router);
+    app.use("/performanceapi/studentInstrumentEvaluation", router);
 };

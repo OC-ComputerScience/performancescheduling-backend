@@ -231,6 +231,8 @@ db.studentInstrument.hasMany(db.studentInstrumentEvaluation, {
 db.userRole.hasMany(db.studentInstrumentEvaluation, {
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
+db.level.hasMany(db.studentInstrumentEvaluation, 
+  { foreignKey : {name : "beginningPerformanceLevelGoal",  allowNull: true}} );
 
 db.studentInstrumentEvaluation.belongsTo(db.semester, {
   foreignKey: { allowNull: false },
@@ -241,6 +243,11 @@ db.studentInstrumentEvaluation.belongsTo(db.studentInstrument, {
 db.studentInstrumentEvaluation.belongsTo(db.userRole, {
   foreignKey: { name: "instructorRoleId", allowNull: false },
 });
+db.studentInstrumentEvaluation.belongsTo(db.level, {
+  foreignKey: { name: "beginningPerformanceLevelGoal", allowNull: true },
+});
+
+
 
 //StudentInstrumentSignup FKs
 
