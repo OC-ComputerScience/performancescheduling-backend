@@ -25,9 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       beginningRecitalHearingDates: {
         type: Sequelize.STRING,
       },
-      beginningPerformanceLevelGoal: {
-        type: Sequelize.STRING,
-      },
+
       midtermAttendance: {
         type: Sequelize.STRING,
       },
@@ -60,7 +58,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       comments: {
         type: Sequelize.STRING,
-        allowNull: false,
+       
       },
     }
   );

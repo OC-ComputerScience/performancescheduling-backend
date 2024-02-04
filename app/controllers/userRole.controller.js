@@ -189,11 +189,12 @@ exports.getRolesForUser = (req, res) => {
 exports.getAllRolesForRoleId = (req, res) => {
   const sortVar = req.query.sortVar;
   const order = [];
-  if (req.query.userStatus="All") 
+  let userStatus = null
+  if (req.query.userStatus=="All") 
       userStatus ="";
     else
        userStatus= { status: { [Op.eq]: "Active" }}; 
-
+  console.log("userStatus", req.query.userStatus);
   if (sortVar != undefined) {
     sortVar.split(",").forEach(function (item) {
       order.push([db.user, item, req.query.order]);
