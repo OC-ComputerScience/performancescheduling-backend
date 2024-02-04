@@ -301,3 +301,19 @@ exports.getSemesterStudentRepertoire = async (req, res) => {
       });
     });
 };
+
+exports.getStudentRepertoireByPieceId = async (req, res) => {
+  await StudentPiece.findAll({
+    where: { pieceId: req.params.pieceId },
+    
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving studentPieces.",
+      });
+    });
+};

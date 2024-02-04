@@ -176,3 +176,26 @@ exports.getByEventSignupId = (req, res) => {
       });
     });
 };
+
+exports.getByPieceId = (req, res) => {
+  EventSignupPiece.findAll({
+    where: { pieceId: req.params.pieceId },
+    include: {
+      model: db.piece,
+      required: true,
+      include: {
+        model: db.composer,
+        required: true,
+      },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Error retrieving eventSignupPiece",
+      });
+    });
+};
+

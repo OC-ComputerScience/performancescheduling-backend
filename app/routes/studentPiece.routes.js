@@ -26,6 +26,10 @@ module.exports = (app) => {
     [authenticate],
     studentPiece.getSemesterStudentRepertoire
   );
-
+  router.get(
+    "/pieceId/:pieceId",
+    [authenticate],
+    studentPiece.getStudentRepertoireByPieceId
+  );
   app.use("/performanceapi/studentPiece", router);
 };
