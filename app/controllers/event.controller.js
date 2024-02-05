@@ -112,9 +112,11 @@ exports.findById = (req, res) => {
   const id = req.params.id;
   Event.findOne({
     where: { id: id },
+    order: [[db.eventSignup, "startTime", "ASC"]],
     include: {
       model: db.eventSignup,
       include: [
+        { model: db.eventSignupPiece , include: {model: db.piece, include : {model: db.composer}}, required: false},
         {
           model: db.studentInstrumentSignup,
           include: [
@@ -124,14 +126,34 @@ exports.findById = (req, res) => {
                 {
                   model: db.userRole,
                   as: "studentRole",
-                  include: {
-                    model: db.user,
-                  },
+                  include:[
+                    {model: db.user},
+                    {model: db.major}
+                  ]
                 },
                 {
                   model: db.instrument,
                   required: true,
                 },
+                {
+                  model: db.userRole,
+                  required: true,
+                  as: "instructorRole",
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+                {
+                  model: db.userRole,
+                  required: false,
+                  as: "accompanistRole",
+                  include: {
+                    model: db.user,
+                    required: true,
+                  },
+                },
+                
               ],
             },
 
