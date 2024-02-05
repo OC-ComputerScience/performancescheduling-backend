@@ -191,3 +191,30 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+// Retrieve  studentInstrumentEvaluations for a specific studentInstrument from the database
+exports.findByStudentInstrumentId = (req, res) => {
+  const sortVar = req.query.sortVar;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  StudentInstrumentEvaluation.findAll({
+    order: order,
+    where: {
+      studentInstrumentId: req.params.id,
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving studentInstrumentEvaluations.",
+      });
+    });
+};
