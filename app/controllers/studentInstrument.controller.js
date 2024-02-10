@@ -648,7 +648,8 @@ exports.getStudentsForAccompanistId = (req, res) => {
 
 exports.getStudentInstrumentsForStudentId = (req, res) => {
   let active = req.query.active;
-  let activeRule = active != null ? { status: active } : "";
+  let activeRule = active && active!="All" ? { status: active } : "";
+
   StudentInstrument.findAll({
     where: [{ studentRoleId: req.params.studentId },activeRule],
     order: [
