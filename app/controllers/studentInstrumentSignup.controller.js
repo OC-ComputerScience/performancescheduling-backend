@@ -189,6 +189,11 @@ exports.getByUserRoleId = (req, res) => {
             required: false,
           },
           {
+            model: db.level,
+            as: "endingLevelEventSignup",
+            required: false,
+          },
+          {
             model: db.event,
             required: true,
             where: dateRule,
