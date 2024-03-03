@@ -36,6 +36,12 @@ module.exports = (sequelize, Sequelize) => {
     interpretationGrade: {
       type: Sequelize.STRING,
     },
+    techniqueComment:{
+      type: Sequelize.STRING(600),
+    },
+    techniqueGrade:{
+      type: Sequelize.STRING,
+    },
     toneComment: {
       type: Sequelize.STRING(600),
     },
