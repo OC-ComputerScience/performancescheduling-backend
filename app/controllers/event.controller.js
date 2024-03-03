@@ -1,6 +1,10 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const Event = db.event;
+const EventSignup = db.eventSignup;
+const UserRole = db.userRole;
+const Availability = db.availability;
+const { sendMail } = require("../utilities/sendMail.js");
 
 // Create and Save a new event
 exports.create = (req, res) => {
@@ -528,3 +532,269 @@ exports.getEventsBySemesterId = (req, res) => {
       });
     });
 };
+
+// Email all Active Students for events  
+
+exports.emailActiveStudentsForEvent = async (req, res) => {
+  const eventId = req.params.id;
+  const fromEmail = req.body.fromEmail;
+  console.log('Sending email to all active students for event: '+eventId+" from: "+fromEmail)
+  
+  let event;
+  let userRoles;
+  // get event data
+  await Event.findOne({
+    where: { id: eventId }, include : {model : db.location, required : true}}).then((data) => {
+      
+      event = data.dataValues;
+      
+    }).catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving event for event="+eventId,
+      });
+      return;
+    })
+ if (event.isReady ) { 
+  // get all active students
+  await UserRole.findAll({
+      where: { roleId: 1 , status: "Active" },include : {model: db.user, required: true, where: {status: "Active" }}  
+    })
+      .then((data) => {
+      
+        userRoles=data;
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving userRoles.",
+        });
+        return;
+      });
+     
+// send email to all active students
+    let from = fromEmail;
+    let subject = 'Music Event Notification :' + event.name;
+   
+    let date = new Date(event.date + " 00:00:00").toLocaleDateString("us-EN");
+    let startTime = new Date(event.date + " "+event.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    
+    userRoles.forEach((userRole) => {
+      let body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+    'Please visit performance.oc.edu and signup for this event.\n\nOC Music Department';
+
+      let to = userRole.dataValues.user.email;
+      console.log('Sending email to: '+to+" from: " +from+"  "+ body);
+      //sendMail = (from, to, "", subject, body)
+    })
+    res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
+  }
+  };
+
+  exports.emailActiveInstAccForEvent = async (req, res) => {
+    const eventId = req.params.id;
+    const fromEmail = req.body.fromEmail;
+    console.log('Sending email to all active Instructors/Accomp for event: '+eventId+" from: "+fromEmail)
+    let event;
+    let userRoles;
+    // get event data
+    await Event.findOne({
+      where: { id: eventId }, include : {model : db.location, required : true}}).then((data) => {
+        event = data.dataValues;
+      }).catch((err) => {
+        res.status(500).send({
+          message: err.message || "Some error occurred while retrieving event for event="+eventId,
+        });
+        return;
+      })
+  
+    // get all active instructors/accompanists
+    await UserRole.findAll({
+        where :  {[Op.or] : [{roleId: 1 },{ roleId: 2}], status: "Active" }, 
+        include : {model: db.user, required: true, where: {status: "Active" }}  
+        })
+        .then((data) => {
+        
+          userRoles=data;
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while retrieving userRoles.",
+          });
+          return;
+        });
+       
+  // send email to all instructors/accompanists
+      let from = fromEmail;
+      let subject = 'Music Event Notification :' + event.name;
+     
+      let date = new Date(event.date + " 00:00:00").toLocaleDateString("us-EN");
+      let startTime = new Date(event.date + " "+event.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+      let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    
+      let body;
+      userRoles.forEach((userRole) => {
+        if (event.isReady) {
+        body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+      'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if the intend to perform.\n\nOC Music Department';
+        } else {
+          body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' at '+event.location.roomName + '.\n\n'+
+          'Please visit performance.oc.edu and add availibilities for this event.\n\nOC Music Department';
+        }
+        let to = userRole.dataValues.user.email;
+        console.log('Sending email to: '+to+" from: " +from+"  "+ body);
+        //sendMail = (from, to, "", subject, body)
+      })
+      res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
+    };
+
+
+  
+// Email all Signed Students for events  
+
+exports.emailSignedUpStudentsForEvent = async (req, res) => {
+  const eventId = req.params.id;
+  const fromEmail = req.body.fromEmail;
+  console.log('Sending email to all signedup students for event: '+eventId+" from: "+fromEmail)
+  
+  let event;
+  let eventSignups;
+  // get event data
+  await Event.findOne({
+    where: { id: eventId }, include : {model : db.location, required : true}}).then((data) => {
+      event = data.dataValues;
+    }).catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving event for event="+eventId,
+      });
+      return;
+    })
+  
+ if (event.isReady ) {
+  // get all active eventSignups
+    await EventSignup.findAll({
+      where: {
+        eventId: event.id,
+      },
+      include: [
+        {
+          model: db.studentInstrumentSignup,
+          required: true,
+          include: {
+            model: db.studentInstrument,
+            required: true,
+            include: {
+              model: db.userRole,
+              as: "studentRole",
+              required: true,
+              include: {
+                model: db.user,
+                required: true,
+              },
+            },
+          },
+        },
+
+      ],
+    }).then((data) => {
+
+      eventSignups=data;
+    
+    }).catch((err) => { 
+      res.status(500).send({
+      message: err.message || "Some error occurred while retrieving eventSignups for event="+eventId,
+    });
+    return;
+    })
+     
+// send email to all active students
+    let from = fromEmail;
+    let subject = 'Music Event SigupReminder :' + event.name;
+   
+    let date = new Date(event.date + " 00:00:00").toLocaleDateString("us-EN");
+    let startTime = new Date(event.date + " "+event.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    
+    eventSignups.forEach((eventSignup) => {
+      eventSignup.studentInstrumentSignups.forEach((studentInstrumentSignup) => {
+        user= studentInstrumentSignup.dataValues.studentInstrument.dataValues.studentRole.dataValues.user.dataValues;
+        let time = new Date(event.date + " "+eventSignup.dataValues.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+    
+        let body=user.firstName+",\n\n"+ "You are signed up to perform at "+event.name+'. You are performing on '+date+' at '+time+' in '+event.location.roomName + '.\n\n'+
+    'You can visit performance.oc.edu to check on this event.\n\nOC Music Department';
+
+        let to = user.email;
+        console.log('Sending email to: '+to+" from: " +from+" \n"+ body);
+      //sendMail = (from, to, "", subject, body)
+      })
+    });
+    res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
+  }
+};
+// Email all Available Instructors/Accompanist for events
+  exports.emailAvailInstAccForEvent = async (req, res) => {
+    const eventId = req.params.id;
+    const fromEmail = req.body.fromEmail;
+
+    console.log('Sending email to all available Instructors/Accomp for event: '+eventId+" from: "+fromEmail)
+    let event;
+    let availabilities;
+    // get event data
+    await Event.findOne({
+      where: { id: eventId }, include : {model : db.location, required : true}}).then((data) => {
+        event = data.dataValues;
+      }).catch((err) => {
+        res.status(500).send({
+          message: err.message || "Some error occurred while retrieving event for event="+eventId,
+        });
+        return;
+      })
+  
+    // get all active instructors/accompanists
+    await Availability.findAll({
+      where: {
+        eventId: eventId,
+      },
+      include: {
+        model: db.userRole,
+        include: [
+          {
+            model: db.user,
+          },
+        ],
+      },
+    })
+      .then((data) => {
+  
+        availabilities = data;
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || "Something went wrong getting availabilities.",
+        });
+      });
+       
+  // send email to all instructors/accompanists with availabilities
+      let from = fromEmail;
+      let subject = 'Music Event Reminder :' + event.name;
+     
+      let date = new Date(event.date + " 00:00:00").toLocaleDateString("us-EN");
+   
+      let body;
+      availabilities.forEach((availability) => {
+        let startTime = new Date(event.date + " "+availability.dataValues.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+        let endTime = new Date(event.date + " "+availability.dataValues.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+      
+        userRole = availability.dataValues.userRole;
+        body=   userRole.dataValues.user.firstName+",\n\nYou are signed up for "+ event.name+'. The event is on '+date+' and you signed up for '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+      'Please visit performance.oc.edu for info on this event.\n\nOC Music Department';
+  
+        let to = userRole.dataValues.user.email;
+        console.log('Sending email to: '+to+" from: " +from+"  "+ body);
+        //sendMail = (from, to, "", subject, body)
+      })
+      res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
+    };
