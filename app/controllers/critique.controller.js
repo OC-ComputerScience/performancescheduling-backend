@@ -35,6 +35,8 @@ exports.create = (req, res) => {
     dictionGrade: req.body.dictionGrade,
     interpretationComment: req.body.interpretationComment,
     interpretationGrade: req.body.interpretationGrade,
+    techniqueComment: req.body.techniqueComment,
+    techniqueGrade: req.body.techniqueGrade,
     toneComment: req.body.toneComment,
     toneGrade: req.body.toneGrade,
     overallComment: req.body.overallComment,
