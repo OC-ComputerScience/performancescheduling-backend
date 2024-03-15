@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const Event = db.event;
 const EventSignup = db.eventSignup;
 const UserRole = db.userRole;
+const User = db.user;
 const Availability = db.availability;
 const { sendMail } = require("../utilities/sendMail.js");
 
@@ -597,7 +598,7 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
     const fromEmail = req.body.fromEmail;
     console.log('Sending email to all active Instructors/Accomp for event: '+eventId+" from: "+fromEmail)
     let event;
-    let userRoles;
+    let users;
     // get event data
     await Event.findOne({
       where: { id: eventId }, include : {model : db.location, required : true}}).then((data) => {
@@ -610,13 +611,13 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
       })
   
     // get all active instructors/accompanists
-    await UserRole.findAll({
-        where :  {[Op.or] : [{roleId: 1 },{ roleId: 2}], status: "Active" }, 
-        include : {model: db.user, required: true, where: {status: "Active" }}  
+    await User.findAll({
+        where: {status: "Active" }, 
+        include : {model: db.userRole, required: true, where :  {[Op.or] : [{roleId: 4 },{ roleId: 2}], status: "Active" }}  
         })
         .then((data) => {
         
-          userRoles=data;
+          users=data;
         })
         .catch((err) => {
           console.log(err);
@@ -636,15 +637,15 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
       let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
     
       let body;
-      userRoles.forEach((userRole) => {
+      users.forEach((user) => {
         if (event.isReady) {
-        body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+        body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
       'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if the intend to perform.\n\nOC Music Department';
         } else {
-          body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' at '+event.location.roomName + '.\n\n'+
+          body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' at '+event.location.roomName + '.\n\n'+
           'Please visit performance.oc.edu and add availibilities for this event.\n\nOC Music Department';
         }
-        let to = userRole.dataValues.user.email;
+        let to = user.dataValues.email;
         console.log('Sending email to: '+to+" from: " +from+"  "+ body);
         //sendMail = (from, to, "", subject, body)
       })
