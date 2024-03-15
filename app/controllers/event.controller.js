@@ -586,8 +586,8 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
     'Please visit performance.oc.edu and signup for this event.\n\nOC Music Department';
 
       let to = userRole.dataValues.user.email;
-      console.log('Sending email to: '+to+" from: " +from+"  "+ body);
-      //sendMail = (from, to, "", subject, body)
+      console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+      sendMail (from, to, "", subject, body)
     })
     res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
   }
@@ -646,8 +646,8 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
           'Please visit performance.oc.edu and add availibilities for this event.\n\nOC Music Department';
         }
         let to = user.dataValues.email;
-        console.log('Sending email to: '+to+" from: " +from+"  "+ body);
-        //sendMail = (from, to, "", subject, body)
+        console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+        sendMail(from, to, "", subject, body)
       })
       res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
     };
@@ -728,8 +728,8 @@ exports.emailSignedUpStudentsForEvent = async (req, res) => {
     'You can visit performance.oc.edu to check on this event.\n\nOC Music Department';
 
         let to = user.email;
-        console.log('Sending email to: '+to+" from: " +from+" \n"+ body);
-      //sendMail = (from, to, "", subject, body)
+        console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+      sendMail  (from, to, "", subject, body)
       })
     });
     res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
@@ -794,8 +794,8 @@ exports.emailSignedUpStudentsForEvent = async (req, res) => {
       'Please visit performance.oc.edu for info on this event.\n\nOC Music Department';
   
         let to = userRole.dataValues.user.email;
-        console.log('Sending email to: '+to+" from: " +from+"  "+ body);
-        //sendMail = (from, to, "", subject, body)
+        console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+        sendMail(from, to, "", subject, body)
       })
       res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
     };
