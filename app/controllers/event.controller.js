@@ -582,7 +582,7 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
     let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
     
     userRoles.forEach((userRole) => {
-      let body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+      let body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' in '+event.location.roomName + '.\n\n'+
     'Please visit performance.oc.edu and signup for this event.\n\nOC Music Department';
 
       let to = userRole.dataValues.user.email;
@@ -640,9 +640,9 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
       users.forEach((user) => {
         if (event.isReady) {
         body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
-      'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if the intend to perform.\n\nOC Music Department';
+      'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if they intend to perform.\n\nOC Music Department';
         } else {
-          body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' at '+event.location.roomName + '.\n\n'+
+          body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' in '+event.location.roomName + '.\n\n'+
           'Please visit performance.oc.edu and add availibilities for this event.\n\nOC Music Department';
         }
         let to = user.dataValues.email;
