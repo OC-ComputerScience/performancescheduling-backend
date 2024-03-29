@@ -75,6 +75,30 @@ exports.findAll = (req, res) => {
       });
     });
 };
+// Retrieve all userRoles from the database for a type and status
+exports.findAllTypeStatus = (req, res) => {
+  const sortVar = req.query.sortVar;
+  const type = req.query.type;
+  const status = req.query.status;
+  var order = [];
+
+  if (sortVar != undefined) {
+    order.push([sortVar, req.query.order]);
+  }
+
+  UserRole.findAll({
+    order: order,where: { type: { [Op.eq]: type }, status: { [Op.eq]: status } },include :{model: db.user, required: true, where: {status: { [Op.eq]: "Active" }}}  
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userRoles.",
+      });
+    });
+};
 
 // Retrieve a(n) userRole by id
 exports.findById = (req, res) => {
