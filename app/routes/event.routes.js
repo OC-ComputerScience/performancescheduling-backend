@@ -1,6 +1,9 @@
 module.exports = (app) => {
+
   const event = require("../controllers/event.controller.js");
+
   const { authenticate } = require("../authorization/authorization.js");
+
   var router = require("express").Router();
 
   // Create a new event
@@ -29,5 +32,12 @@ module.exports = (app) => {
     [authenticate],
     event.getEventsBySemesterId
   );
+  
+  router.post("/:id/emailActiveStudents", [authenticate], event.emailActiveStudentsForEvent);
+  router.post("/:id/emailActiveInstAccForEvent", [authenticate], event.emailActiveInstAccForEvent);
+
+  router.post("/:id/emailSignedUpStudentsForEvent", [authenticate], event.emailSignedUpStudentsForEvent);
+  router.post("/:id/emailAvailInstAccForEvent", [authenticate], event.emailAvailInstAccForEvent);
+ 
   app.use("/performanceapi/event", router);
 };
