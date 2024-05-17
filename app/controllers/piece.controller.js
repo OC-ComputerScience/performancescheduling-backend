@@ -25,6 +25,8 @@ exports.create = (req, res) => {
   const piece = {
     composerId: req.body.composerId,
     title: req.body.title,
+    movement: req.body.movement,
+    work: req.body.work,
     originalLanguage: req.body.originalLanguage,
     originalLyrics: req.body.originalLyrics,
     poeticTranslation: req.body.poeticTranslation,
