@@ -582,12 +582,15 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
     let endTime = new Date(event.date + " "+event.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
     
     userRoles.forEach((userRole) => {
-      let body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+      if (userRole.dataValues.user.emailStatus) {
+       
+      let body=   userRole.dataValues.user.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' in '+event.location.roomName + '.\n\n'+
     'Please visit performance.oc.edu and signup for this event.\n\nOC Music Department';
 
       let to = userRole.dataValues.user.email;
       console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
       sendMail (from, to, "", subject, body)
+      }
     })
     res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
   }
@@ -638,16 +641,18 @@ exports.emailActiveStudentsForEvent = async (req, res) => {
     
       let body;
       users.forEach((user) => {
+        if (user.dataValues.emailStatus) {
         if (event.isReady) {
         body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for student sign up. It will be held on '+date+' at '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
-      'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if the intend to perform.\n\nOC Music Department';
+      'Please visit performance.oc.edu and signup for this event. Please remind your student to signup if they intend to perform.\n\nOC Music Department';
         } else {
-          body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' at '+event.location.roomName + '.\n\n'+
+          body=   user.dataValues.firstName+",\n\n"+ event.name+' is ready for instructors and accomponianst to add availabilities. It will be held on '+date+' at '+startTime+' to '+endTime+' on '+date+' in '+event.location.roomName + '.\n\n'+
           'Please visit performance.oc.edu and add availibilities for this event.\n\nOC Music Department';
         }
         let to = user.dataValues.email;
         console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
         sendMail(from, to, "", subject, body)
+      }
       })
       res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
     };
@@ -721,15 +726,18 @@ exports.emailSignedUpStudentsForEvent = async (req, res) => {
     
     eventSignups.forEach((eventSignup) => {
       eventSignup.studentInstrumentSignups.forEach((studentInstrumentSignup) => {
-        user= studentInstrumentSignup.dataValues.studentInstrument.dataValues.studentRole.dataValues.user.dataValues;
-        let time = new Date(event.date + " "+eventSignup.dataValues.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
-    
-        let body=user.firstName+",\n\n"+ "You are signed up to perform at "+event.name+'. You are performing on '+date+' at '+time+' in '+event.location.roomName + '.\n\n'+
-    'You can visit performance.oc.edu to check on this event.\n\nOC Music Department';
+        let user = studentInstrumentSignup.dataValues.studentInstrument.dataValues.studentRole.dataValues.user.dataValues;
+          if (user.emailStatus) {
+          let time = new Date(event.date + " "+eventSignup.dataValues.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
+      
+          let body=user.firstName+",\n\n"+ "You are signed up to perform at "+event.name+'. You are performing on '+date+' at '+time+' in '+event.location.roomName + '.\n\n'+
+      'You can visit performance.oc.edu to check on this event.\n\nOC Music Department';
 
-        let to = user.email;
-        console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
-      sendMail  (from, to, "", subject, body)
+          let to = user.email;
+          console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+
+        sendMail  (from, to, "", subject, body)
+        }
       })
     });
     res.status(200).send({message: "Emails sent to all active students for event: "+eventId});
@@ -789,13 +797,15 @@ exports.emailSignedUpStudentsForEvent = async (req, res) => {
         let startTime = new Date(event.date + " "+availability.dataValues.startTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
         let endTime = new Date(event.date + " "+availability.dataValues.endTime).toLocaleTimeString("us-EN", { hour: "numeric", minute: "2-digit" });
       
-        userRole = availability.dataValues.userRole;
-        body=   userRole.dataValues.user.firstName+",\n\nYou are signed up for "+ event.name+'. The event is on '+date+' and you signed up for '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
-      'Please visit performance.oc.edu for info on this event.\n\nOC Music Department';
-  
-        let to = userRole.dataValues.user.email;
-        console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
-        sendMail(from, to, "", subject, body)
+        let userRole = availability.dataValues.userRole;
+        if (userRole.dataValues.user.emailStatus) {
+          body=   userRole.dataValues.user.firstName+",\n\nYou are signed up for "+ event.name+'. The event is on '+date+' and you signed up for '+startTime+' to '+endTime+' at '+event.location.roomName + '.\n\n'+
+        'Please visit performance.oc.edu for info on this event.\n\nOC Music Department';
+    
+          let to = userRole.dataValues.user.email;
+          console.log('Sending email to: '+to+" from: " +from+" \n"+subject+"\n"+ body);
+          sendMail(from, to, "", subject, body)
+        }
       })
       res.status(200).send({message: "Emails sent to all active instructors/availabilites for event: "+eventId});
     };
