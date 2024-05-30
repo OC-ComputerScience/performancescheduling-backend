@@ -90,6 +90,8 @@ exports.login = async (req, res) => {
           picture: picture,
           authenticationType: "OC",
           status: "Active",
+          emailStatus: true,
+          textStatus: true
         };
 
         await User.create(user)

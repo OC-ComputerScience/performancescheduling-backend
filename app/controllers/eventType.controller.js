@@ -71,13 +71,18 @@ exports.create = (req, res) => {
 // Retrieve all eventTypes from the database
 exports.findAll = (req, res) => {
   const sortVar = req.query.sortVar;
+  const filter = req.query.filter;
   var order = [];
-
+  if (filter != undefined && filter != 'null') {
+  var where = {status : filter}
+  }
+  else { where = {} }
   if (sortVar != undefined) {
     order.push([sortVar, req.query.order]);
   }
 
   EventType.findAll({
+    where: where,
     order: order,
   })
     .then((data) => {
