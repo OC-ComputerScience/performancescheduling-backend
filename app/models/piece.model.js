@@ -10,6 +10,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    movement: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    work: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     originalLanguage: {
       type: Sequelize.STRING,
     },
