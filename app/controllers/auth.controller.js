@@ -44,9 +44,10 @@ exports.login = async (req, res) => {
     .then(async (data) => {
       if (data != null) {
         // doing this to ensure that the user's name is the one listed with Google
+        // decide just to update the picture since we allow editing of names
         user = data.dataValues;
-        user.firstName = firstName;
-        user.lastName = lastName;
+        // user.firstName = firstName;
+        // user.lastName = lastName;
         user.picture = picture;
         await User.update(user, {
           where: { id: user.id },
@@ -89,6 +90,8 @@ exports.login = async (req, res) => {
           picture: picture,
           authenticationType: "OC",
           status: "Active",
+          emailStatus: true,
+          textStatus: true
         };
 
         await User.create(user)
