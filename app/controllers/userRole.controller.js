@@ -103,7 +103,8 @@ exports.findAllTypeStatus = (req, res) => {
 // Retrieve a(n) userRole by id
 exports.findById = (req, res) => {
   const id = req.params.id;
-  UserRole.findByPk(id)
+  UserRole.findByPk(id,
+    {include: [{ model: db.role }, { model: db.user }, { model: db.major }],})
     .then((data) => {
       if (data) {
         res.send(data);
