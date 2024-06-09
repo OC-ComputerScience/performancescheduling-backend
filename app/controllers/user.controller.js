@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const User = db.user;
 
 // Create and Save a new user
@@ -43,6 +43,7 @@ exports.create = (req, res) => {
     picture: req.body.picture,
     emailStatus: req.body.emailStatus,
     textStatus: req.body.textStatus,
+    adminEmail: req.body.adminEmail,
     googleToken: req.body.googleToken,
     status: req.body.status,
   };
@@ -188,6 +189,24 @@ exports.getAllWithRoles = (req, res) => {
     });
 };
 
+exports.getAllWithAdminEmail = (req, res) => {
+  User.findAll({
+    where: {adminEmail: true},
+    include: {
+      model: db.userRole,
+      required: false,
+      where: { roleId: 3 },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving users.",
+      });
+    });
+};
 exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
   const sortVar = req.query.sortVar;
   var order = [];
