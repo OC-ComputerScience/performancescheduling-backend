@@ -86,6 +86,47 @@ exports.findById = (req, res) => {
       });
     });
 };
+exports.findByIdWithAllData = (req, res) => {
+  const id = req.params.id;
+  StudentInstrumentSignup.findByPk(id,{
+
+    include: [
+      {model: db.userRole, as: "instructorRoleSignup", required: true,
+      include: [
+        {model: db.user, required: true},
+      ]},
+      {model: db.userRole, as: "accompanistRoleSignup", required: false,
+      include: [
+        {model: db.user, required: true},
+      ]},
+      {model: db.studentInstrument, required: true, 
+        include: [
+          {model: db.instrument, required: true},
+          {model: db.userRole, as: "studentRole", required: true, 
+            include: [
+              {model: db.user, required: true},
+            ]},
+            {model: db.level, required: false}
+        ]}, 
+
+    ]
+  }
+  )
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: "Cannot find studentInstrumentSignup with id=" + id,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error retrieving studentInstrumentSignup with id=" + id,
+      });
+    });
+};
 
 // Update a(n) studentInstrumentSignup by the id in the request
 exports.update = (req, res) => {
@@ -315,23 +356,23 @@ exports.findAllWithAllData = (req, res) => {
           {model: db.studentInstrumentSignup, required: true,
             
             include: [
-              {model: db.userRole, as: "instructorRoleSignup", required: true,
-              include: [
-                {model: db.user, required: true},
-              ]},
-              {model: db.userRole, as: "accompanistRoleSignup", required: false,
-              include: [
-                {model: db.user, required: true},
-              ]},
-              {model: db.studentInstrument, required: true, 
-                include: [
-                  {model: db.instrument, required: true},
-                  {model: db.userRole, as: "studentRole", required: true, 
-                    include: [
-                      {model: db.user, required: true},
-                    ]},
-                    {model: db.level, required: false}
-                ]}, 
+              // {model: db.userRole, as: "instructorRoleSignup", required: true,
+              // include: [
+              //   {model: db.user, required: true},
+              // ]},
+              // {model: db.userRole, as: "accompanistRoleSignup", required: false,
+              // include: [
+              //   {model: db.user, required: true},
+              // ]},
+              // {model: db.studentInstrument, required: true, 
+              //   include: [
+              //     {model: db.instrument, required: true},
+              //     {model: db.userRole, as: "studentRole", required: true, 
+              //       include: [
+              //         {model: db.user, required: true},
+              //       ]},
+              //       {model: db.level, required: false}
+              //   ]}, 
 
             ]
           },
