@@ -4,12 +4,16 @@ module.exports = (app) => {
   var router = require("express").Router();
   // Retrive All StudentInstrumentSignups with extra Data
   router.get("/allData", [authenticate], studentInstrumentSignup.findAllWithAllData);
+  // Retrieve a single studentInstrumentSignup with id with all data
+  router.get("/allData/:id", [authenticate], studentInstrumentSignup.findByIdWithAllData);
   // Create a new studentInstrumentSignup
   router.post("/", [authenticate], studentInstrumentSignup.create);
   // Retrieve all studentInstrumentSignups
   router.get("/", [authenticate], studentInstrumentSignup.findAll);
   // Retrieve a single studentInstrumentSignup with id
   router.get("/:id", [authenticate], studentInstrumentSignup.findById);
+  // Retrieve a single studentInstrumentSignup with id with all data
+    router.get("/:id/allData", [authenticate], studentInstrumentSignup.findByIdWithAllData);
   // Update a studentInstrumentSignup with id
   router.put("/:id", [authenticate], studentInstrumentSignup.update);
   // Delete a studentInstrumentSignup with id
@@ -18,7 +22,6 @@ module.exports = (app) => {
   router.delete("/", [authenticate], studentInstrumentSignup.deleteAll);
   // Get by userRoleId
   router.get("/userRoleId/:userRoleId", [authenticate], studentInstrumentSignup.getByUserRoleId);
-
 
   app.use("/performanceapi/studentInstrumentSignup", router);
 };
