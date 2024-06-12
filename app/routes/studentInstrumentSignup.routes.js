@@ -6,6 +6,8 @@ module.exports = (app) => {
   router.get("/allData", [authenticate], studentInstrumentSignup.findAllWithAllData);
   // Retrieve a single studentInstrumentSignup with id with all data
   router.get("/allData/:id", [authenticate], studentInstrumentSignup.findByIdWithAllData);
+  // Retrieve a single studentInstrumentSignup with id with all data
+  router.get("/eventSignup/:id", [authenticate], studentInstrumentSignup.findAllbySignUpIdAllData);
   // Create a new studentInstrumentSignup
   router.post("/", [authenticate], studentInstrumentSignup.create);
   // Retrieve all studentInstrumentSignups
