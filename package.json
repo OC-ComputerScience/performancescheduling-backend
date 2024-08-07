@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json performance-backend.service .env deploy"
+    "bundle": "mkdir deploy && cp -r app server.js package.json package-lock.json performance-backend.service .env deploy",
+    "winbundle": "md deploy && xcopy app deploy /s /h /i /y /e && copy server.js deploy && copy *.json deploy && copy asset-t1-backend.service deploy && copy .env deploy"
   },
   "keywords": [
     "node.js",
