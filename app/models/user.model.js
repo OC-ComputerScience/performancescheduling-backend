@@ -40,6 +40,9 @@ module.exports = (sequelize, Sequelize) => {
     textStatus: {
       type: Sequelize.BOOLEAN,
     },
+    adminEmail: {
+      type: Sequelize.BOOLEAN,
+    },
     googleToken: {
       type: Sequelize.STRING(512),
     },

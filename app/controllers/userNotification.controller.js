@@ -3,17 +3,19 @@ const { Op } = require("sequelize");
 const UserNotification = db.userNotification;
 const Notification = db.notification;
 const UserRole = db.userRole;
+const User = db.user;
 const { sendMail } = require("../utilities/sendMail.js");
 
 // Create and Save a new userNotification
 exports.create = async (req, res) => {
   // Validate request
-  if (!req.body.userRoleId) {
-    res.status(400).send({
-      message: "userRoleId cannot be empty!",
-    });
-    return;
-  } else if (!req.body.notificationId) {
+  // if (!req.body.userRoleId) {
+  //   res.status(400).send({
+  //     message: "userRoleId cannot be empty!",
+  //   });
+  //   return;
+  //} else
+   if (!req.body.notificationId) {
     res.status(400).send({
       message: "notificationId cannot be empty!",
     });
@@ -54,6 +56,8 @@ exports.create = async (req, res) => {
     });
 
   let user = {};
+  if (req.body.userRoleId != undefined && req.body.userRoleId != null) {
+
   await UserRole.findAll({
     where: {
       id: { [Op.eq]: req.body.userRoleId },
@@ -72,9 +76,33 @@ exports.create = async (req, res) => {
       });
       return;
     });
+  } else {
+    // get the first admin user
+   var adminId = null;
+   await User.findAll({
+      where: {adminEmail: true},
+      include: {
+        model: db.userRole,
+        required: true,
+        where: { roleId: 3 },
+      },
+    })
+      .then((data) => {
+        user = data[0];
+        adminId = user.userRoles.find(userRole => userRole.roleId === 3).id;
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).send({
+          message: err.message || "Some error occurred while retrieving admin users.",
+        });
+        return
+      });
+    }
 
+   
   const userNotification = {
-    userRoleId: req.body.userRoleId,
+    userRoleId: req.body.userRoleId != null ? req.body.userRoleId : adminId ,
     notificationId: req.body.notificationId,
     text: req.body.text,
     data: req.body.data,

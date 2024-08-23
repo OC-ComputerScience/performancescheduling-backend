@@ -54,6 +54,7 @@ exports.create = (req, res) => {
 
   const event = {
     name: req.body.name,
+    programName: req.body.programName,
     date: req.body.date,
     startTime: req.body.startTime,
     endTime: req.body.endTime,
