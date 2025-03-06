@@ -209,6 +209,13 @@ exports.getAllWithAdminEmail = (req, res) => {
 };
 exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
   const sortVar = req.query.sortVar;
+  const active = req.query.active;
+  if (active == undefined) {
+    select = {};
+  } 
+  else if (active == "true") {
+    select = {status: "Active"};
+  }
   var order = [];
 
   if (sortVar != undefined) {
@@ -216,6 +223,7 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
   }
 
   User.findAll({
+    where: select,
     include: {
       model: db.userRole,
       required: false,
