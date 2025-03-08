@@ -210,6 +210,7 @@ exports.getAllWithAdminEmail = (req, res) => {
 exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
   const sortVar = req.query.sortVar;
   const active = req.query.active;
+  console.log(active);  
   if (active == undefined) {
     select = {};
   } 
@@ -243,10 +244,7 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
                   model: db.user,
                   required: true,
                 },
-                {
-                  model: db.availability,
-                  required: false,
-                },
+
               ],
             },
             {
@@ -258,10 +256,7 @@ exports.getAllWithRolesAndStudentInstrumentData = (req, res) => {
                   model: db.user,
                   required: true,
                 },
-                {
-                  model: db.availability,
-                  required: false,
-                },
+  
               ],
             },
             {
