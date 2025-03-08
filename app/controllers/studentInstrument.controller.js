@@ -201,10 +201,7 @@ exports.getByUserId = (req, res) => {
             model: db.user,
             required: true,
           },
-          {
-            model: db.availability,
-            required: false,
-          },
+
         ],
       },
       {
@@ -216,10 +213,7 @@ exports.getByUserId = (req, res) => {
             model: db.user,
             required: true,
           },
-          {
-            model: db.availability,
-            required: false,
-          },
+
         ],
       },
       {
