@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
       beginningRecitalHearingDates: {
         type: Sequelize.STRING,
       },
+      beginningPerformanceLevelGoal: {
+        type: Sequelize.STRING,
+      },
 
       midtermAttendance: {
         type: Sequelize.STRING,
